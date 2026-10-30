@@ -1,0 +1,5 @@
+# Host-half entry. DSH loads ./lib/index.js as the plugin; the optional
+# ./lib/client.js is loaded by the Web profile when dsh.client is declared.
+- insert:
+    - id: dsh-ugreen-nas
+      name: dsh-ugreen-nas

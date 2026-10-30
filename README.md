@@ -28,16 +28,16 @@ bash scripts/build.sh
 | timeoutMs | 15000 | 请求超时 |
 | rejectUnauthorized | false | 自签证书保持 false |
 
-## 工具（51 个，跟随令牌权限自动增减）
+## 工具（56 个，跟随令牌权限自动增减）
 
 | 大类 | 工具 |
 |---|---|
 | 连接 | ugreen_connection_test |
-| 文件 | ugreen_file_stat · ugreen_file_list · ugreen_file_read · ugreen_file_write · ugreen_file_mkdir · ugreen_file_share_mkdir · ugreen_file_rename · ugreen_file_move · ugreen_file_delete · ugreen_file_restore · ugreen_file_chtimes · ugreen_file_tag_set · ugreen_file_tag_link · ugreen_file_tag_list · ugreen_file_quota |
-| 存储 | ugreen_storage_info |
-| 任务 | ugreen_task_overview |
-| 应用 | ugreen_app_status · ugreen_app_install · ugreen_app_start · ugreen_app_stop |
-| Docker | ugreen_docker_list · ugreen_docker_logs · ugreen_docker_start · ugreen_docker_stop · ugreen_docker_restart · ugreen_docker_compose_list · ugreen_docker_compose_logs · ugreen_docker_compose_create · ugreen_docker_compose_start · ugreen_docker_compose_stop · ugreen_docker_compose_restart · ugreen_docker_compose_delete · ugreen_docker_image_search · ugreen_docker_image_list · ugreen_docker_image_pull · ugreen_docker_app_usage · ugreen_docker_app_rebuild |
+| 文件 | ugreen_file_stat · ugreen_file_list · ugreen_file_read · ugreen_file_write · ugreen_file_mkdir · ugreen_file_share_mkdir · ugreen_file_rename · ugreen_file_move · ugreen_file_delete · ugreen_file_restore · ugreen_file_chtimes · ugreen_file_tag_set · ugreen_file_tag_link · ugreen_file_tag_list · ugreen_file_tag_delete · ugreen_file_quota |
+| 存储 | ugreen_storage_info · ugreen_storage_smart |
+| 任务 | ugreen_task_overview · ugreen_task_metrics |
+| 应用 | ugreen_app_status · ugreen_app_list · ugreen_app_install · ugreen_app_start · ugreen_app_stop |
+| Docker | ugreen_docker_list · ugreen_docker_logs · ugreen_docker_start · ugreen_docker_stop · ugreen_docker_restart · ugreen_docker_compose_list · ugreen_docker_compose_logs · ugreen_docker_compose_create · ugreen_docker_compose_start · ugreen_docker_compose_stop · ugreen_docker_compose_restart · ugreen_docker_compose_delete · ugreen_docker_image_search · ugreen_docker_image_list · ugreen_docker_image_pull · ugreen_docker_app_usage · ugreen_docker_app_rebuild · ugreen_docker_check |
 | 下载 | ugreen_download_list · ugreen_download_create · ugreen_download_pause · ugreen_download_resume · ugreen_download_retry · ugreen_download_remove |
 | 控制面板 | ugreen_system_info · ugreen_user_list · ugreen_user_create · ugreen_group_add_members · ugreen_hardware_info · ugreen_network_info |
 

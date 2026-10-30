@@ -493,7 +493,7 @@ dsh-ugreen-nas/
 
 ### 6.2 设置页
 
-插件的 browser half 通过 plugins.bundle.config 注册一个最小配置页；配置字段来自 Config schema，保存后由宿主回写设置并触发热加载：
+插件的 browser half 通过 plugins.bundle.config 注册配置页。这版宿主对该槽位只传 view 不传 form 对象，因此页面经自建的 'ug' TypertRemoteService 网关（lib/gateway.js）走 /api RPC 通道读写配置：status 返回脱敏后的当前配置（令牌只报存在性），save 写回宿主设置并就地重建客户端，test 用当前配置实调一次 OpenCLI：
 
 | 字段 | 类型 | 说明 |
 |---|---|---|

@@ -1,6 +1,6 @@
 {
   "name": "dsh-ugreen-nas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UGREEN NAS OpenCLI connector for DeepSeek Harness: scoped access-token auth over HTTPS, read-only file/storage/task/docker tools, settings UI via the host plugin form.",
   "type": "module",
   "main": "./lib/index.js",

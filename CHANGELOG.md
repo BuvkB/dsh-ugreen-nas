@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- 修复：ug/capabilities RPC 被同名字段遮蔽导致探测徽章不显示。
+
 ## 0.2.1
 
 - 修复：设置页状态读取（owner 缺 hasToken 导致配置页加载失败）。

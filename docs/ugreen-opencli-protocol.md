@@ -664,9 +664,8 @@ service download.DownloadService
 
 ### 9.1 当前版本限制
 
-- 只有只读工具，没有写操作
-- 没有自定义 sidebar 面板；设置页由 DSH 自动生成
-- 未实现服务器流（WebSocket）和文件上传
+- 应用卸载/更新与 Filemgr/UploadFile（WebSocket 流式/分片上传）暂未实现，其余能力已覆盖
+- 没有自定义 sidebar 面板；配置页经 plugins.bundle.config 提供
 - catalog 基于 UGOS 1.21.0.80330；升级 NAS 系统后可能需要重新提取
 - Readdir 是 server-streaming，不能用 unary 调用；文件列表改用 CategoryOrFileDirList
 - /volume1 作为根路径会被 Files 服务拒绝；使用 /home/<user>、/volume1/@home/<user> 或共享目录路径

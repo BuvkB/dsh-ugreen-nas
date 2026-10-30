@@ -30896,6 +30896,45 @@
     "download.ResumeDownloadTaskResponse": {
       "name": "download.ResumeDownloadTaskResponse",
       "fields": []
+    },
+    "appinfo.StartRequest": {
+      "name": "appinfo.StartRequest",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "jsonName": "appId"
+        }
+      ]
+    },
+    "appinfo.StopRequest": {
+      "name": "appinfo.StopRequest",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "jsonName": "appId"
+        }
+      ]
+    },
+    "appinfo.GetAppDetailReq": {
+      "name": "appinfo.GetAppDetailReq",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "jsonName": "appId"
+        },
+        {
+          "name": "need_hide_module",
+          "number": 2,
+          "type": "BOOL",
+          "jsonName": "needHideModule"
+        }
+      ]
     }
   },
   "enums": {

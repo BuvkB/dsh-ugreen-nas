@@ -1,12 +1,12 @@
 # dsh-ugreen-nas
 
-DSH（DeepSeek Harness）的绿联 NAS 连接器：用「访问令牌」调用 UGOS Pro 的 OpenCLI 公共接口，提供只读的文件、存储、任务、Docker 和下载查询工具。
+DSH（DeepSeek Harness）的绿联 NAS 连接器：用「访问令牌」调用 UGOS Pro 的 OpenCLI 公共接口，把 NAS 端授权的能力全部变成模型工具——从只读查询到文件写入、Docker 启停、应用管理。
 
 ## 它不是什么
 
 - 不是 SSH 包装：工具不要求 NAS 账号密码或 SSH。
 - 不是 MCP：OpenCLI 是绿联自己的 gRPC-over-HTTP/protobuf 协议；本插件是 DSH 原生插件。
-- 不是全权限 Agent：v0.1 只注册只读工具，不包含删除、移动、上传、Docker 启停、应用安装/卸载。
+- 不是越权代理：工具严格跟随访问令牌在 NAS 端勾选的权限，令牌没给的能力对应工具直接不注册。
 
 ## 安装
 
@@ -28,19 +28,29 @@ bash scripts/build.sh
 | timeoutMs | 15000 | 请求超时 |
 | rejectUnauthorized | false | 自签证书保持 false |
 
-## 工具
+## 工具（51 个，跟随令牌权限自动增减）
 
-| 工具 | 作用 |
+| 大类 | 工具 |
 |---|---|
-| ugreen_connection_test | 检查令牌与 appmgr/filemgr 状态 |
-| ugreen_file_stat | 文件/目录属性 |
-| ugreen_file_list | 按路径或根目录浏览文件 |
-| ugreen_file_read | 读取小文件（默认 256KB） |
-| ugreen_storage_info | 磁盘、存储池、卷 |
-| ugreen_task_overview | CPU/内存/风扇/网络/磁盘总览 |
-| ugreen_docker_list | Docker 容器列表 |
-| ugreen_docker_logs | 容器日志 |
-| ugreen_download_list | 下载任务列表 |
+| 连接 | ugreen_connection_test |
+| 文件 | ugreen_file_stat · ugreen_file_list · ugreen_file_read · ugreen_file_write · ugreen_file_mkdir · ugreen_file_share_mkdir · ugreen_file_rename · ugreen_file_move · ugreen_file_delete · ugreen_file_restore · ugreen_file_chtimes · ugreen_file_tag_set · ugreen_file_tag_link · ugreen_file_tag_list · ugreen_file_quota |
+| 存储 | ugreen_storage_info |
+| 任务 | ugreen_task_overview |
+| 应用 | ugreen_app_status · ugreen_app_install · ugreen_app_start · ugreen_app_stop |
+| Docker | ugreen_docker_list · ugreen_docker_logs · ugreen_docker_start · ugreen_docker_stop · ugreen_docker_restart · ugreen_docker_compose_list · ugreen_docker_compose_logs · ugreen_docker_compose_create · ugreen_docker_compose_start · ugreen_docker_compose_stop · ugreen_docker_compose_restart · ugreen_docker_compose_delete · ugreen_docker_image_search · ugreen_docker_image_list · ugreen_docker_image_pull · ugreen_docker_app_usage · ugreen_docker_app_rebuild |
+| 下载 | ugreen_download_list · ugreen_download_create · ugreen_download_pause · ugreen_download_resume · ugreen_download_retry · ugreen_download_remove |
+| 控制面板 | ugreen_system_info · ugreen_user_list · ugreen_user_create · ugreen_group_add_members · ugreen_hardware_info · ugreen_network_info |
+
+危险操作（删除、卸载、停机、重建类）在工具描述里带【写/危险操作】标注；是否逐步确认由 DSH 自身的工具审批策略决定。
+
+## 权限如何生效
+
+1. 在 NAS 控制面板创建访问令牌，按需勾选 70 项权限（见下方总表）。
+2. 插件激活时对每个大类做一次探测：令牌没授予的大类，对应工具**不会注册**给模型。
+3. 插件设置页可实时看到各大类的「已授予 / 未授予」状态；改权限需在 NAS 端重建令牌。
+4. `mode` 设置：`full`（默认）注册令牌允许的全部工具；`readonly` 只注册只读工具。
+5. 细粒度差异（如同一大类里勾了删除但没勾写入）由 NAS 端逐调用校验，403 会返回缺失的权限名。
+
 
 ## 访问令牌权限总表（70 项）
 
@@ -155,9 +165,9 @@ Docker 的 `docker_container_list`、`docker_container_logs`，Downloads 的 `do
 ## 安全
 
 - 访问令牌只放在插件设置中（role=secret），不要写进代码/日志/对话。
-- 正式使用建议单独创建一个只读令牌，只勾选 Files/Storage/Task Manager 的 read 权限。
+- 想要只读 Agent：建一个只含 read 权限的令牌（最小 21 项见权限总表末尾），或把插件 mode 设为 readonly。
+- 给了写权限时，删除/停机类操作带【写/危险操作】标注，建议在 DSH 里开启工具审批逐次确认。
 - 默认不校验自签 HTTPS 证书；有可信证书时可把 rejectUnauthorized 设为 true。
-- 这个插件当前只读，所有工具都不会修改 NAS。
 
 ## 开发
 

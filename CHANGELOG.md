@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+- 优化：ug/capabilities 打开页面时同步刷新探测，避免刚重启时全部显示未知。
+
 ## 0.2.2
 
 - 修复：ug/capabilities RPC 被同名字段遮蔽导致探测徽章不显示。

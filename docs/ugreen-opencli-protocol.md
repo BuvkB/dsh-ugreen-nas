@@ -1,6 +1,6 @@
 # 绿联 NAS 访问令牌 / OpenCLI 协议与 DSH 插件接入文档
 
-> 文档状态：v0.1，基于 UGOS Pro 1.21.0.80330（构建 2026-10-23）实测整理
+> 文档状态：v0.2.3，基于 UGOS Pro 1.21.0.80330（构建 2026-10-23）实测整理
 > 适用插件：dsh-ugreen-nas
 > 说明：本文档只描述只读接口和协议逆向过程。没有在 NAS 上创建、修改或删除任何配置。
 
@@ -511,32 +511,30 @@ dsh-ugreen-nas/
 
 ### 6.3 工具列表
 
-当前 v0.1 只注册只读工具：
+v0.2.3 注册 51 个工具，覆盖 8 大类权限：
 
-| 工具 | socket_id | service / method | 用途 |
-|---|---|---|---|
-| ugreen_connection_test | ugreen.app.grpc | app.App/GetAppStatus | 检查令牌与应用状态 |
-| ugreen_file_stat | ugreen.filemgr.internal.grpc | ugidl.filesystem.Filesystem/Stat | 文件/目录属性 |
-| ugreen_file_list | ugreen.filemgr.internal.grpc | ugidl.filesystem.Filesystem/CategoryOrFileDirList | 按路径/根目录浏览 |
-| ugreen_file_read | ugreen.filemgr.internal.grpc | ugidl.filesystem.Filesystem/ReadFile | 小文件读取 |
-| ugreen_storage_info | ugreen.storage.grpc | storage.Storage/DiskList + PoolList + VolumeList | 磁盘、存储池、卷 |
-| ugreen_task_overview | ugreen.taskmgr.internal.grpc | taskserv.TaskManage/GetRunOverview | CPU/内存/风扇/网络/磁盘 |
-| ugreen_docker_list | ugreen.dockerserv.internal.grpc | docker.Docker/ContainerList | 容器列表 |
-| ugreen_docker_logs | ugreen.dockerserv.internal.grpc | docker.Docker/GetContainerLogs | 容器日志 |
-| ugreen_download_list | ugreen.downloadserv.internal.grpc | download.DownloadService/BatchGetDownloadTask | 下载任务 |
+| 大类 | 工具数 | 代表工具 |
+|---|---:|---|
+| 连接 | 1 | ugreen_connection_test |
+| 文件 | 15 | ugreen_file_stat / list / read / write / mkdir / rename / move / delete / restore / tag / quota |
+| 存储 | 1 | ugreen_storage_info |
+| 任务 | 1 | ugreen_task_overview |
+| 应用 | 4 | ugreen_app_status / install / start / stop |
+| Docker | 17 | ugreen_docker_list / logs / start / stop / compose_* / image_* |
+| 下载 | 6 | ugreen_download_list / create / pause / resume / retry / remove |
+| 控制面板 | 6 | ugreen_system_info / user_list / user_create / group_add_members / hardware_info / network_info |
 
-### 6.4 只读策略
+具体每个工具的 socket_id 与 service/method 映射见 lib/tools.js；权限与工具的对应关系见 README 的 70 项权限总表。
 
-v0.1 不注册任何写工具：
+### 6.4 模式与危险操作
 
-- 没有删除、移动、重命名、上传、Docker 启停、应用安装/卸载
-- 所有工具都是只读方法（operation=read 或等价只读）
-- 即使访问令牌有全部 70 项权限，插件也只使用读方法
-- 如果以后添加写工具，必须：
-  - 单独的 allowWrite 设置
-  - 逐次人工确认（DSH approval）
-  - 单独的最小权限令牌
-  - 对 delete 类操作强制二次确认
+v0.2 起覆盖 8 大类全部 70 项权限对应的能力（51 个工具）：
+
+- mode 设置：full（默认，按令牌权限注册全部工具）/ readonly（仅注册只读工具，共 21 个）
+- 令牌能力探测（lib/capabilities.js）：对 7 个 socket 各探测一次廉价读，未授予的大类对应工具不注册；结果缓存 10 分钟
+- 危险操作（删除、卸载、停机、重建类）在工具描述中带【写/危险操作】标注；逐次确认交给 DSH 的工具审批策略
+- 403 错误消息带缺失的权限名，提示在 NAS 端重建令牌
+- 应用卸载/更新（UninstallStream/UpdateStream）与 Filemgr/UploadFile 依赖 WebSocket 流式/分片上传，暂未实现（见 9.2）
 
 ### 6.5 错误处理
 
@@ -653,7 +651,7 @@ service download.DownloadService
 1. 令牌是 bearer credential：任何拿到完整令牌的人都能在权限范围内调用，不要写入代码、README、日志或对话。
 2. 插件设置中 accessToken 标记 role('secret')：DSH 设置页不回显给模型；但仍存在本机 settings 文件，注意文件权限。
 3. 不要使用登录 cookie 代替访问令牌：登录 cookie 是网页会话，权限更大、生命周期不同；OpenCLI 明确拒绝 cookie token。
-4. 只读优先：本插件 v0.1 只读。即使当前令牌有 70 项权限，也不注册写工具。
+4. 只读优先：如果不需要写操作，把插件 mode 设为 readonly（只注册 21 个只读工具），或直接给只读令牌。
 5. 最小权限令牌：正式使用时建议新建只读令牌，只勾选 Files/Storage/Task Manager 的 read 权限，避免把 Docker 启停、删除等能力交给 Agent。
 6. HTTPS：默认 rejectUnauthorized=false 是为了兼容 NAS 自签证书；如果 NAS 有可信证书，建议设为 true。
 7. 外网访问：UGREENlink/DDNS 只是传输通道，不改变 token 权限；不要把 OpenCLI 端口直接暴露到公网而不加额外防护。
@@ -686,7 +684,7 @@ service download.DownloadService
 1. 从 NAS 重新下载应用二进制
 2. 运行 scripts/extract-descriptors.go 生成 catalog
 3. 运行 scripts/build-catalog.mjs 合并/裁剪
-4. 用 test/smoke.test.mjs 对只读工具做回归
+4. 用 test/smoke.test.mjs 对工具做回归
 5. 更新插件版本与 CHANGELOG
 
 ---

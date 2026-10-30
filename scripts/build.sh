@@ -43,7 +43,7 @@ link_pkg() {
   ' "node_modules/$name" "$DEP_ROOT/$name"
 }
 
-for pkg in @deepseek-ai/dsh-tools @deepseek-ai/schemastery; do
+for pkg in @deepseek-ai/dsh-tools @deepseek-ai/schemastery @deepseek-ai/dsh-typert-protocol; do
   link_pkg "$pkg"
   echo "  linked $pkg"
 done

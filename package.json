@@ -31,13 +31,17 @@
   ],
   "peerDependencies": {
     "@deepseek-ai/dsh-tools": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0",
-    "@deepseek-ai/schemastery": "^3.18.0"
+    "@deepseek-ai/schemastery": "^3.18.0",
+    "@deepseek-ai/dsh-typert-protocol": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-tools": {
       "optional": true
     },
     "@deepseek-ai/schemastery": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-typert-protocol": {
       "optional": true
     }
   },

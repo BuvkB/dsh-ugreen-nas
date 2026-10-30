@@ -19,9 +19,11 @@ const ref = (value) => Object.freeze({ get: () => value, [write]: () => {} })
 
 const tools = []
 const effects = []
+const plugins = []
 const fakeCtx = {
   effect: (fn, label) => { effects.push(label); return fn() },
   tools: { register: (tool) => { tools.push(tool); return () => {} } },
+  plugin: (plugin, config) => { plugins.push({ plugin, config }); return { name: plugin?.name } },
   inject: () => undefined,
 }
 apply(fakeCtx, { endpoint: ref(endpoint), accessToken: ref(token), timeoutMs: ref(15000), rejectUnauthorized: ref(false) })
@@ -32,6 +34,7 @@ check('inject tools', inject.includes('tools'))
 check('config schema', Boolean(Config))
 check('registers read-only tools', ['ugreen_connection_test','ugreen_file_stat','ugreen_file_list','ugreen_file_read','ugreen_storage_info','ugreen_task_overview','ugreen_docker_list','ugreen_docker_logs','ugreen_download_list'].every(n => tools.some(t => t.name === n)), tools.map(t => t.name).join(','))
 check('effects labelled', effects.length === tools.length && effects.every(x => x.startsWith('dsh-ugreen-nas:')))
+check('mounts the ug gateway', plugins.length === 1 && plugins[0].plugin?.name === 'UgreenGateway' && typeof plugins[0].config?.clientFactory === 'function', JSON.stringify(plugins.map(p => p.plugin?.name)))
 
 if (!token || !endpoint) {
   console.log('  (UGREEN_TOKEN / UGREEN_ENDPOINT not set; live checks skipped)')

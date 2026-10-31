@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- 新增：插件图标（icon.svg + 市场卡片用 assets/icon-180.png）。
+
 ## 0.3.0
 
 - 新增：应用卸载 `ugreen_app_uninstall`、应用更新 `ugreen_app_update`、全局搜索 `ugreen_search`，工具总数 59，覆盖全部 70 项权限。

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- 新增：应用卸载 `ugreen_app_uninstall`、应用更新 `ugreen_app_update`、全局搜索 `ugreen_search`，工具总数 59，覆盖全部 70 项权限。
+- 新增：OpenCLI WebSocket 流式客户端（0x01 DATA / 0x02 HALF_CLOSE / 0x03 CANCEL / 0x13 STATUS），支持服务端流式 RPC。
+- 优化：设置页按官方插件设计规范重做，卡片式布局、8 个大类能力徽章、浅色/深色主题适配。
+- 修复：设置页「当前插件只注册只读工具」的旧文案，以及访问令牌格式提示。
+
 ## 0.2.4
 
 - 新增：任务指标细分、S.M.A.R.T.、容器端口/目录/GPU 检查、标签删除、应用列表，共 56 个工具。

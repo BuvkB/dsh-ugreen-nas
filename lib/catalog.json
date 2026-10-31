@@ -30935,6 +30935,3292 @@
           "jsonName": "needHideModule"
         }
       ]
+    },
+    "google.protobuf.Empty": {
+      "name": "google.protobuf.Empty",
+      "fields": []
+    },
+    "google.protobuf.Any": {
+      "name": "google.protobuf.Any",
+      "fields": [
+        {
+          "name": "type_url",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "typeUrl"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "google.protobuf.Duration": {
+      "name": "google.protobuf.Duration",
+      "fields": [
+        {
+          "name": "seconds",
+          "number": 1,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "seconds"
+        },
+        {
+          "name": "nanos",
+          "number": 2,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "nanos"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.GrpcLogEntry": {
+      "name": "grpc.binarylog.v1.GrpcLogEntry",
+      "fields": [
+        {
+          "name": "timestamp",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Timestamp",
+          "repeated": false,
+          "jsonName": "timestamp"
+        },
+        {
+          "name": "call_id",
+          "number": 2,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "callId"
+        },
+        {
+          "name": "sequence_id_within_call",
+          "number": 3,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "sequenceIdWithinCall"
+        },
+        {
+          "name": "type",
+          "number": 4,
+          "type": "ENUM",
+          "typeName": ".grpc.binarylog.v1.GrpcLogEntry.EventType",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "logger",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".grpc.binarylog.v1.GrpcLogEntry.Logger",
+          "repeated": false,
+          "jsonName": "logger"
+        },
+        {
+          "name": "client_header",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.ClientHeader",
+          "repeated": false,
+          "jsonName": "clientHeader"
+        },
+        {
+          "name": "server_header",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.ServerHeader",
+          "repeated": false,
+          "jsonName": "serverHeader"
+        },
+        {
+          "name": "message",
+          "number": 8,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Message",
+          "repeated": false,
+          "jsonName": "message"
+        },
+        {
+          "name": "trailer",
+          "number": 9,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Trailer",
+          "repeated": false,
+          "jsonName": "trailer"
+        },
+        {
+          "name": "payload_truncated",
+          "number": 10,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "payloadTruncated"
+        },
+        {
+          "name": "peer",
+          "number": 11,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Address",
+          "repeated": false,
+          "jsonName": "peer"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.ClientHeader": {
+      "name": "grpc.binarylog.v1.ClientHeader",
+      "fields": [
+        {
+          "name": "metadata",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Metadata",
+          "repeated": false,
+          "jsonName": "metadata"
+        },
+        {
+          "name": "method_name",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "methodName"
+        },
+        {
+          "name": "authority",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "authority"
+        },
+        {
+          "name": "timeout",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Duration",
+          "repeated": false,
+          "jsonName": "timeout"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.ServerHeader": {
+      "name": "grpc.binarylog.v1.ServerHeader",
+      "fields": [
+        {
+          "name": "metadata",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Metadata",
+          "repeated": false,
+          "jsonName": "metadata"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.Trailer": {
+      "name": "grpc.binarylog.v1.Trailer",
+      "fields": [
+        {
+          "name": "metadata",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.Metadata",
+          "repeated": false,
+          "jsonName": "metadata"
+        },
+        {
+          "name": "status_code",
+          "number": 2,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "statusCode"
+        },
+        {
+          "name": "status_message",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "statusMessage"
+        },
+        {
+          "name": "status_details",
+          "number": 4,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "statusDetails"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.Message": {
+      "name": "grpc.binarylog.v1.Message",
+      "fields": [
+        {
+          "name": "length",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "length"
+        },
+        {
+          "name": "data",
+          "number": 2,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "data"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.Metadata": {
+      "name": "grpc.binarylog.v1.Metadata",
+      "fields": [
+        {
+          "name": "entry",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".grpc.binarylog.v1.MetadataEntry",
+          "repeated": true,
+          "jsonName": "entry"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.MetadataEntry": {
+      "name": "grpc.binarylog.v1.MetadataEntry",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "grpc.binarylog.v1.Address": {
+      "name": "grpc.binarylog.v1.Address",
+      "fields": [
+        {
+          "name": "type",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".grpc.binarylog.v1.Address.Type",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "address",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "address"
+        },
+        {
+          "name": "ip_port",
+          "number": 3,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "ipPort"
+        }
+      ]
+    },
+    "proxypass.SimpleRequest": {
+      "name": "proxypass.SimpleRequest",
+      "fields": [
+        {
+          "name": "route",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "route"
+        },
+        {
+          "name": "params",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".proxypass.SimpleRequest.ParamsEntry",
+          "repeated": true,
+          "jsonName": "params"
+        },
+        {
+          "name": "body_type",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".proxypass.RequestBodyType",
+          "repeated": false,
+          "jsonName": "bodyType"
+        },
+        {
+          "name": "body",
+          "number": 4,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "body"
+        }
+      ]
+    },
+    "proxypass.SimpleRequest.ParamsEntry": {
+      "name": "proxypass.SimpleRequest.ParamsEntry",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".common.StringArray",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "proxypass.SimpleResponse": {
+      "name": "proxypass.SimpleResponse",
+      "fields": [
+        {
+          "name": "ret_code",
+          "number": 1,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "retCode"
+        },
+        {
+          "name": "body",
+          "number": 2,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "body"
+        },
+        {
+          "name": "err_msg",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "errMsg"
+        },
+        {
+          "name": "debug_info",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "debugInfo"
+        }
+      ]
+    },
+    "ugidl_ctl.entry_serv.ipc.": {
+      "name": "ugidl_ctl.entry_serv.ipc.",
+      "fields": []
+    },
+    "title.SortOptions": {
+      "name": "title.SortOptions",
+      "fields": [
+        {
+          "name": "order_types",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".title.OrderType",
+          "repeated": true,
+          "jsonName": "orderTypes"
+        },
+        {
+          "name": "sort_direction",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".title.SortDirection",
+          "repeated": false,
+          "jsonName": "sortDirection"
+        }
+      ]
+    },
+    "title.TagInfo": {
+      "name": "title.TagInfo",
+      "fields": [
+        {
+          "name": "tag_id",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "tagId"
+        },
+        {
+          "name": "name",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "name"
+        },
+        {
+          "name": "color",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "color"
+        },
+        {
+          "name": "shortcut",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "shortcut"
+        }
+      ]
+    },
+    "title.SearchResult": {
+      "name": "title.SearchResult",
+      "fields": [
+        {
+          "name": "file_path",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "filePath"
+        },
+        {
+          "name": "file_class",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".title.FileClassCode",
+          "repeated": false,
+          "jsonName": "fileClass"
+        },
+        {
+          "name": "file_mode",
+          "number": 3,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "fileMode"
+        },
+        {
+          "name": "file_size",
+          "number": 4,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "fileSize"
+        },
+        {
+          "name": "last_access_time",
+          "number": 5,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "lastAccessTime"
+        },
+        {
+          "name": "created_time",
+          "number": 6,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "createdTime"
+        },
+        {
+          "name": "modified_time",
+          "number": 7,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "modifiedTime"
+        },
+        {
+          "name": "file_name",
+          "number": 8,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "fileName"
+        },
+        {
+          "name": "permission_mask",
+          "number": 9,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "permissionMask"
+        },
+        {
+          "name": "parent_permission_mask",
+          "number": 10,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "parentPermissionMask"
+        },
+        {
+          "name": "is_quick_access",
+          "number": 11,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isQuickAccess"
+        },
+        {
+          "name": "folder_type",
+          "number": 12,
+          "type": "ENUM",
+          "typeName": ".title.FolderType",
+          "repeated": false,
+          "jsonName": "folderType"
+        },
+        {
+          "name": "tags",
+          "number": 13,
+          "type": "MESSAGE",
+          "typeName": ".title.TagInfo",
+          "repeated": true,
+          "jsonName": "tags"
+        }
+      ]
+    },
+    "title.CreateTitleStreamTaskRequest": {
+      "name": "title.CreateTitleStreamTaskRequest",
+      "fields": [
+        {
+          "name": "watch_status_only",
+          "number": 1,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "watchStatusOnly"
+        },
+        {
+          "name": "query",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "query"
+        },
+        {
+          "name": "search_paths",
+          "number": 3,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "searchPaths"
+        },
+        {
+          "name": "include_subdirectories",
+          "number": 4,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "includeSubdirectories"
+        },
+        {
+          "name": "include_file_classes",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".title.FileClassCode",
+          "repeated": true,
+          "jsonName": "includeFileClasses"
+        },
+        {
+          "name": "exclude_file_classes",
+          "number": 6,
+          "type": "ENUM",
+          "typeName": ".title.FileClassCode",
+          "repeated": true,
+          "jsonName": "excludeFileClasses"
+        },
+        {
+          "name": "file_suffix",
+          "number": 7,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "fileSuffix"
+        },
+        {
+          "name": "min_size",
+          "number": 8,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "minSize"
+        },
+        {
+          "name": "max_size",
+          "number": 9,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "maxSize"
+        },
+        {
+          "name": "modified_time_from",
+          "number": 10,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "modifiedTimeFrom"
+        },
+        {
+          "name": "modified_time_to",
+          "number": 11,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "modifiedTimeTo"
+        },
+        {
+          "name": "created_time_from",
+          "number": 12,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "createdTimeFrom"
+        },
+        {
+          "name": "created_time_to",
+          "number": 13,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "createdTimeTo"
+        },
+        {
+          "name": "last_access_time_from",
+          "number": 14,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "lastAccessTimeFrom"
+        },
+        {
+          "name": "last_access_time_to",
+          "number": 15,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "lastAccessTimeTo"
+        },
+        {
+          "name": "exclude_paths",
+          "number": 16,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "excludePaths"
+        },
+        {
+          "name": "exclude_exact_paths",
+          "number": 17,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "excludeExactPaths"
+        },
+        {
+          "name": "tag_ids",
+          "number": 18,
+          "type": "UINT64",
+          "repeated": true,
+          "jsonName": "tagIds"
+        },
+        {
+          "name": "max_result_count",
+          "number": 19,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "maxResultCount"
+        }
+      ]
+    },
+    "title.TitleStreamTaskResponse": {
+      "name": "title.TitleStreamTaskResponse",
+      "fields": [
+        {
+          "name": "task_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "taskId"
+        },
+        {
+          "name": "status",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".title.TaskStatus",
+          "repeated": false,
+          "jsonName": "status"
+        },
+        {
+          "name": "searched_total_count",
+          "number": 3,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "searchedTotalCount"
+        },
+        {
+          "name": "unordered_items",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".title.SearchResult",
+          "repeated": true,
+          "jsonName": "unorderedItems"
+        },
+        {
+          "name": "error_message",
+          "number": 5,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "errorMessage"
+        },
+        {
+          "name": "error_code",
+          "number": 6,
+          "type": "ENUM",
+          "typeName": ".title.TaskErrorCode",
+          "repeated": false,
+          "jsonName": "errorCode"
+        }
+      ]
+    },
+    "title.GetTitleTaskResultsRequest": {
+      "name": "title.GetTitleTaskResultsRequest",
+      "fields": [
+        {
+          "name": "task_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "taskId"
+        },
+        {
+          "name": "offset",
+          "number": 2,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "offset"
+        },
+        {
+          "name": "limit",
+          "number": 3,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "limit"
+        },
+        {
+          "name": "sort",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".title.SortOptions",
+          "repeated": false,
+          "jsonName": "sort"
+        }
+      ]
+    },
+    "title.GetTitleTaskResultsResponse": {
+      "name": "title.GetTitleTaskResultsResponse",
+      "fields": [
+        {
+          "name": "total_count",
+          "number": 1,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "totalCount"
+        },
+        {
+          "name": "ordered_items",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".title.SearchResult",
+          "repeated": true,
+          "jsonName": "orderedItems"
+        },
+        {
+          "name": "finish_at",
+          "number": 3,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "finishAt"
+        },
+        {
+          "name": "error",
+          "number": 4,
+          "type": "ENUM",
+          "typeName": ".title.TaskErrorCode",
+          "repeated": false,
+          "jsonName": "error"
+        }
+      ]
+    },
+    "title.CancelTitleTaskRequest": {
+      "name": "title.CancelTitleTaskRequest",
+      "fields": [
+        {
+          "name": "task_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "taskId"
+        }
+      ]
+    },
+    "title.RemoveTitleTaskRequest": {
+      "name": "title.RemoveTitleTaskRequest",
+      "fields": [
+        {
+          "name": "task_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "taskId"
+        }
+      ]
+    },
+    "appinfo.GetAppBriefReq": {
+      "name": "appinfo.GetAppBriefReq",
+      "fields": [
+        {
+          "name": "app_ids",
+          "number": 1,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "appIds"
+        }
+      ]
+    },
+    "appinfo.Depend": {
+      "name": "appinfo.Depend",
+      "fields": [
+        {
+          "name": "name",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "name"
+        },
+        {
+          "name": "version",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "version"
+        }
+      ]
+    },
+    "appinfo.Version": {
+      "name": "appinfo.Version",
+      "fields": [
+        {
+          "name": "models",
+          "number": 1,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "models"
+        },
+        {
+          "name": "build_time",
+          "number": 2,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "buildTime"
+        },
+        {
+          "name": "size",
+          "number": 3,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "size"
+        },
+        {
+          "name": "low_version",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "lowVersion"
+        },
+        {
+          "name": "beta",
+          "number": 5,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "beta"
+        },
+        {
+          "name": "recommend",
+          "number": 6,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "recommend"
+        },
+        {
+          "name": "important_version",
+          "number": 7,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "importantVersion"
+        },
+        {
+          "name": "version",
+          "number": 8,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "version"
+        },
+        {
+          "name": "version_number",
+          "number": 9,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "versionNumber"
+        },
+        {
+          "name": "gray",
+          "number": 10,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "gray"
+        },
+        {
+          "name": "depend_list",
+          "number": 11,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.Depend",
+          "repeated": true,
+          "jsonName": "dependList"
+        }
+      ]
+    },
+    "appinfo.AppBrief": {
+      "name": "appinfo.AppBrief",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "name_i18n_map",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief.NameI18nMapEntry",
+          "repeated": true,
+          "jsonName": "nameI18nMap"
+        },
+        {
+          "name": "icon_path",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "iconPath"
+        },
+        {
+          "name": "icon_modify_time_sec",
+          "number": 4,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "iconModifyTimeSec"
+        },
+        {
+          "name": "install_status",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".appinfo.InstallStatus",
+          "repeated": false,
+          "jsonName": "installStatus"
+        },
+        {
+          "name": "install_path",
+          "number": 6,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "installPath"
+        },
+        {
+          "name": "installed_version",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.Version",
+          "repeated": false,
+          "jsonName": "installedVersion"
+        },
+        {
+          "name": "cloud_version",
+          "number": 8,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.Version",
+          "repeated": false,
+          "jsonName": "cloudVersion"
+        },
+        {
+          "name": "app_type",
+          "number": 9,
+          "type": "ENUM",
+          "typeName": ".appinfo.AppType",
+          "repeated": false,
+          "jsonName": "appType"
+        }
+      ]
+    },
+    "appinfo.AppBrief.NameI18nMapEntry": {
+      "name": "appinfo.AppBrief.NameI18nMapEntry",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "appinfo.AppDetail": {
+      "name": "appinfo.AppDetail",
+      "fields": [
+        {
+          "name": "brief",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief",
+          "repeated": false,
+          "jsonName": "brief"
+        },
+        {
+          "name": "service_name",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "serviceName"
+        },
+        {
+          "name": "parent_app_id",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "parentAppId"
+        },
+        {
+          "name": "parent_app_name",
+          "number": 5,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "parentAppName"
+        },
+        {
+          "name": "access_list",
+          "number": 6,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "accessList"
+        },
+        {
+          "name": "i18n",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.I18nEntry",
+          "repeated": true,
+          "jsonName": "i18n"
+        },
+        {
+          "name": "open_constraints",
+          "number": 8,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppOpenConstraints",
+          "repeated": false,
+          "jsonName": "openConstraints"
+        },
+        {
+          "name": "access_ctrl_v2",
+          "number": 9,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AccessCtrlV2",
+          "repeated": false,
+          "jsonName": "accessCtrlV2"
+        },
+        {
+          "name": "open_handlers",
+          "number": 10,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenHandler",
+          "repeated": true,
+          "jsonName": "openHandlers"
+        },
+        {
+          "name": "install_parameters",
+          "number": 11,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.InstallParameter",
+          "repeated": true,
+          "jsonName": "installParameters"
+        }
+      ]
+    },
+    "appinfo.PortAccess": {
+      "name": "appinfo.PortAccess",
+      "fields": [
+        {
+          "name": "https_enable",
+          "number": 1,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "httpsEnable"
+        },
+        {
+          "name": "https_port",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "httpsPort"
+        },
+        {
+          "name": "port",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "port"
+        },
+        {
+          "name": "url_path",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "urlPath"
+        },
+        {
+          "name": "link_type",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".appinfo.LinkType",
+          "repeated": false,
+          "jsonName": "linkType"
+        }
+      ]
+    },
+    "appinfo.PortalAccess": {
+      "name": "appinfo.PortalAccess",
+      "fields": [
+        {
+          "name": "url_path",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "urlPath"
+        },
+        {
+          "name": "link_type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.LinkType",
+          "repeated": false,
+          "jsonName": "linkType"
+        }
+      ]
+    },
+    "appinfo.UglinkAccess": {
+      "name": "appinfo.UglinkAccess",
+      "fields": [
+        {
+          "name": "uni_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "uniId"
+        },
+        {
+          "name": "link_type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.LinkType",
+          "repeated": false,
+          "jsonName": "linkType"
+        }
+      ]
+    },
+    "appinfo.DockerAccess": {
+      "name": "appinfo.DockerAccess",
+      "fields": [
+        {
+          "name": "port",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "port"
+        }
+      ]
+    },
+    "appinfo.DisableRemoteAccess": {
+      "name": "appinfo.DisableRemoteAccess",
+      "fields": [
+        {
+          "name": "disable_type",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".appinfo.DisableType",
+          "repeated": false,
+          "jsonName": "disableType"
+        }
+      ]
+    },
+    "appinfo.LinkRule": {
+      "name": "appinfo.LinkRule",
+      "fields": [
+        {
+          "name": "link_type",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".appinfo.LinkType",
+          "repeated": false,
+          "jsonName": "linkType"
+        },
+        {
+          "name": "access_type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.AccessType",
+          "repeated": false,
+          "jsonName": "accessType"
+        },
+        {
+          "name": "port_app_access",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.PortAccess",
+          "repeated": false,
+          "jsonName": "portAppAccess"
+        },
+        {
+          "name": "portal_app_access",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.PortalAccess",
+          "repeated": false,
+          "jsonName": "portalAppAccess"
+        },
+        {
+          "name": "uglink_access",
+          "number": 5,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.UglinkAccess",
+          "repeated": false,
+          "jsonName": "uglinkAccess"
+        },
+        {
+          "name": "docker_access",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.DockerAccess",
+          "repeated": false,
+          "jsonName": "dockerAccess"
+        },
+        {
+          "name": "disable_remote_access",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.DisableRemoteAccess",
+          "repeated": false,
+          "jsonName": "disableRemoteAccess"
+        },
+        {
+          "name": "is_auth_required",
+          "number": 8,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isAuthRequired"
+        }
+      ]
+    },
+    "appinfo.AccessCtrlV2": {
+      "name": "appinfo.AccessCtrlV2",
+      "fields": [
+        {
+          "name": "rules",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.LinkRule",
+          "repeated": true,
+          "jsonName": "rules"
+        },
+        {
+          "name": "open_type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.OpenType",
+          "repeated": false,
+          "jsonName": "openType"
+        },
+        {
+          "name": "supports",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": true,
+          "jsonName": "supports"
+        },
+        {
+          "name": "min_client_version",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.MinClientVersion",
+          "repeated": false,
+          "jsonName": "minClientVersion"
+        }
+      ]
+    },
+    "appinfo.MinClientVersion": {
+      "name": "appinfo.MinClientVersion",
+      "fields": [
+        {
+          "name": "pc",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".common.SemanticVersion",
+          "repeated": false,
+          "jsonName": "pc"
+        },
+        {
+          "name": "android",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".common.SemanticVersion",
+          "repeated": false,
+          "jsonName": "android"
+        },
+        {
+          "name": "ios",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".common.SemanticVersion",
+          "repeated": false,
+          "jsonName": "ios"
+        }
+      ]
+    },
+    "appinfo.RelatedAppMinVersion": {
+      "name": "appinfo.RelatedAppMinVersion",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "min_version",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".common.SemanticVersion",
+          "repeated": false,
+          "jsonName": "minVersion"
+        },
+        {
+          "name": "apply_to",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": true,
+          "jsonName": "applyTo"
+        }
+      ]
+    },
+    "appinfo.OpenServiceStatus": {
+      "name": "appinfo.OpenServiceStatus",
+      "fields": [
+        {
+          "name": "is_enable",
+          "number": 1,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isEnable"
+        },
+        {
+          "name": "is_exception",
+          "number": 2,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isException"
+        },
+        {
+          "name": "is_path_exception",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isPathException"
+        },
+        {
+          "name": "run_status",
+          "number": 4,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "runStatus"
+        },
+        {
+          "name": "install",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".appinfo.InstallStatus",
+          "repeated": false,
+          "jsonName": "install"
+        }
+      ]
+    },
+    "appinfo.OpenRelatedAppBrief": {
+      "name": "appinfo.OpenRelatedAppBrief",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "install",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.InstallStatus",
+          "repeated": false,
+          "jsonName": "install"
+        },
+        {
+          "name": "version",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".common.SemanticVersion",
+          "repeated": false,
+          "jsonName": "version"
+        },
+        {
+          "name": "i18n",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.I18nEntry",
+          "repeated": true,
+          "jsonName": "i18n"
+        },
+        {
+          "name": "icon_path",
+          "number": 5,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "iconPath"
+        },
+        {
+          "name": "status",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenServiceStatus",
+          "repeated": false,
+          "jsonName": "status"
+        }
+      ]
+    },
+    "appinfo.AppOpenConstraints": {
+      "name": "appinfo.AppOpenConstraints",
+      "fields": [
+        {
+          "name": "supports",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": true,
+          "jsonName": "supports"
+        },
+        {
+          "name": "open_type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".appinfo.OpenType",
+          "repeated": false,
+          "jsonName": "openType"
+        },
+        {
+          "name": "min_client_version",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.MinClientVersion",
+          "repeated": false,
+          "jsonName": "minClientVersion"
+        },
+        {
+          "name": "related_app_min_version_list",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.RelatedAppMinVersion",
+          "repeated": true,
+          "jsonName": "relatedAppMinVersionList"
+        },
+        {
+          "name": "depend_list_app_info",
+          "number": 5,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenRelatedAppBrief",
+          "repeated": true,
+          "jsonName": "dependListAppInfo"
+        },
+        {
+          "name": "related_app_info",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenRelatedAppBrief",
+          "repeated": true,
+          "jsonName": "relatedAppInfo"
+        }
+      ]
+    },
+    "appinfo.GetAppDetailResp": {
+      "name": "appinfo.GetAppDetailResp",
+      "fields": [
+        {
+          "name": "app",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppDetail",
+          "repeated": false,
+          "jsonName": "app"
+        }
+      ]
+    },
+    "appinfo.AppBriefList": {
+      "name": "appinfo.AppBriefList",
+      "fields": [
+        {
+          "name": "app_map",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBriefList.AppMapEntry",
+          "repeated": true,
+          "jsonName": "appMap"
+        }
+      ]
+    },
+    "appinfo.AppBriefList.AppMapEntry": {
+      "name": "appinfo.AppBriefList.AppMapEntry",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "appinfo.SearchableApp": {
+      "name": "appinfo.SearchableApp",
+      "fields": [
+        {
+          "name": "brief",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief",
+          "repeated": false,
+          "jsonName": "brief"
+        },
+        {
+          "name": "search_service_address",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "searchServiceAddress"
+        },
+        {
+          "name": "is_running",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isRunning"
+        }
+      ]
+    },
+    "appinfo.GetSearchableAppsRequest": {
+      "name": "appinfo.GetSearchableAppsRequest",
+      "fields": [
+        {
+          "name": "app_ids",
+          "number": 1,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "appIds"
+        }
+      ]
+    },
+    "appinfo.GetSearchableAppsResponse": {
+      "name": "appinfo.GetSearchableAppsResponse",
+      "fields": [
+        {
+          "name": "apps",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.SearchableApp",
+          "repeated": true,
+          "jsonName": "apps"
+        }
+      ]
+    },
+    "appinfo.I18nEntry": {
+      "name": "appinfo.I18nEntry",
+      "fields": [
+        {
+          "name": "lang_name",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "langName"
+        },
+        {
+          "name": "name",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "name"
+        },
+        {
+          "name": "description",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "description"
+        },
+        {
+          "name": "tags",
+          "number": 4,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "tags"
+        }
+      ]
+    },
+    "appinfo.AppWithI18n": {
+      "name": "appinfo.AppWithI18n",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "icon_path",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "iconPath"
+        },
+        {
+          "name": "icon_modify_time_sec",
+          "number": 3,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "iconModifyTimeSec"
+        },
+        {
+          "name": "i18n",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.I18nEntry",
+          "repeated": true,
+          "jsonName": "i18n"
+        },
+        {
+          "name": "install_status",
+          "number": 5,
+          "type": "ENUM",
+          "typeName": ".appinfo.InstallStatus",
+          "repeated": false,
+          "jsonName": "installStatus"
+        }
+      ]
+    },
+    "appinfo.GetListWithI18nResp": {
+      "name": "appinfo.GetListWithI18nResp",
+      "fields": [
+        {
+          "name": "apps",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppWithI18n",
+          "repeated": true,
+          "jsonName": "apps"
+        }
+      ]
+    },
+    "appinfo.SetUpdatePolicyReq": {
+      "name": "appinfo.SetUpdatePolicyReq",
+      "fields": [
+        {
+          "name": "update_policy",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".appinfo.UpdatePolicy",
+          "repeated": false,
+          "jsonName": "updatePolicy"
+        }
+      ]
+    },
+    "appinfo.OpenHandler": {
+      "name": "appinfo.OpenHandler",
+      "fields": [
+        {
+          "name": "targets",
+          "number": 2,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "targets"
+        },
+        {
+          "name": "supports",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": true,
+          "jsonName": "supports"
+        },
+        {
+          "name": "weight",
+          "number": 4,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "weight"
+        }
+      ]
+    },
+    "appinfo.ListAppsByOpenTargetReq": {
+      "name": "appinfo.ListAppsByOpenTargetReq",
+      "fields": [
+        {
+          "name": "target",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "target"
+        },
+        {
+          "name": "client",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": false,
+          "jsonName": "client"
+        }
+      ]
+    },
+    "appinfo.OpenApp": {
+      "name": "appinfo.OpenApp",
+      "fields": [
+        {
+          "name": "brief",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief",
+          "repeated": false,
+          "jsonName": "brief"
+        },
+        {
+          "name": "is_running",
+          "number": 2,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isRunning"
+        }
+      ]
+    },
+    "appinfo.ListAppsByOpenTargetResp": {
+      "name": "appinfo.ListAppsByOpenTargetResp",
+      "fields": [
+        {
+          "name": "apps",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenApp",
+          "repeated": true,
+          "jsonName": "apps"
+        },
+        {
+          "name": "default_app_id",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "defaultAppId"
+        },
+        {
+          "name": "system_default_app_id",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "systemDefaultAppId"
+        }
+      ]
+    },
+    "appinfo.GetDefaultOpenHandlerReq": {
+      "name": "appinfo.GetDefaultOpenHandlerReq",
+      "fields": [
+        {
+          "name": "target",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "target"
+        },
+        {
+          "name": "client",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": false,
+          "jsonName": "client"
+        }
+      ]
+    },
+    "appinfo.GetDefaultOpenHandlerResp": {
+      "name": "appinfo.GetDefaultOpenHandlerResp",
+      "fields": [
+        {
+          "name": "app",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenApp",
+          "repeated": false,
+          "jsonName": "app"
+        }
+      ]
+    },
+    "appinfo.SetDefaultOpenHandlerReq": {
+      "name": "appinfo.SetDefaultOpenHandlerReq",
+      "fields": [
+        {
+          "name": "target",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "target"
+        },
+        {
+          "name": "app_id",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "client",
+          "number": 4,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": false,
+          "jsonName": "client"
+        }
+      ]
+    },
+    "appinfo.ListOpenHandlersReq": {
+      "name": "appinfo.ListOpenHandlersReq",
+      "fields": [
+        {
+          "name": "client",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".common.ClientType",
+          "repeated": false,
+          "jsonName": "client"
+        }
+      ]
+    },
+    "appinfo.AppOpenHandlers": {
+      "name": "appinfo.AppOpenHandlers",
+      "fields": [
+        {
+          "name": "brief",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppBrief",
+          "repeated": false,
+          "jsonName": "brief"
+        },
+        {
+          "name": "open_handlers",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenHandler",
+          "repeated": true,
+          "jsonName": "openHandlers"
+        },
+        {
+          "name": "is_running",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isRunning"
+        },
+        {
+          "name": "default_open_handlers",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.OpenHandler",
+          "repeated": true,
+          "jsonName": "defaultOpenHandlers"
+        }
+      ]
+    },
+    "appinfo.ListOpenHandlersResp": {
+      "name": "appinfo.ListOpenHandlersResp",
+      "fields": [
+        {
+          "name": "apps",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppOpenHandlers",
+          "repeated": true,
+          "jsonName": "apps"
+        }
+      ]
+    },
+    "appinfo.SearchRequest": {
+      "name": "appinfo.SearchRequest",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "contain_sub_apps",
+          "number": 2,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "containSubApps"
+        },
+        {
+          "name": "installed_only",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "installedOnly"
+        }
+      ]
+    },
+    "appinfo.SearchResponse": {
+      "name": "appinfo.SearchResponse",
+      "fields": [
+        {
+          "name": "apps",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppDetail",
+          "repeated": true,
+          "jsonName": "apps"
+        }
+      ]
+    },
+    "appinfo.UninstallRequest": {
+      "name": "appinfo.UninstallRequest",
+      "fields": [
+        {
+          "name": "ids",
+          "number": 1,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "ids"
+        },
+        {
+          "name": "clean",
+          "number": 2,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "clean"
+        },
+        {
+          "name": "user_data_keys",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".appinfo.AppUserDataKeys",
+          "repeated": true,
+          "jsonName": "userDataKeys"
+        }
+      ]
+    },
+    "appinfo.AppUserDataKeys": {
+      "name": "appinfo.AppUserDataKeys",
+      "fields": [
+        {
+          "name": "app_id",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appId"
+        },
+        {
+          "name": "user_data_keys",
+          "number": 2,
+          "type": "STRING",
+          "repeated": true,
+          "jsonName": "userDataKeys"
+        }
+      ]
+    },
+    "TSP.DatabaseData": {
+      "name": "TSP.DatabaseData",
+      "fields": [
+        {
+          "name": "data",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.DataReference",
+          "repeated": false,
+          "jsonName": "data"
+        }
+      ]
+    },
+    "TSP.DatabaseDataArchive": {
+      "name": "TSP.DatabaseDataArchive",
+      "fields": [
+        {
+          "name": "data",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "data"
+        },
+        {
+          "name": "app_relative_path",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appRelativePath"
+        },
+        {
+          "name": "display_name",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "displayName"
+        },
+        {
+          "name": "length",
+          "number": 4,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "length"
+        },
+        {
+          "name": "hash",
+          "number": 5,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "hash"
+        },
+        {
+          "name": "sharable",
+          "number": 6,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "sharable"
+        }
+      ]
+    },
+    "TSP.DatabaseImageDataArchive": {
+      "name": "TSP.DatabaseImageDataArchive",
+      "fields": [
+        {
+          "name": "super",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.DatabaseDataArchive",
+          "repeated": false,
+          "jsonName": "super"
+        },
+        {
+          "name": "type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".TSP.DatabaseImageDataArchive.ImageType",
+          "repeated": false,
+          "jsonName": "type"
+        }
+      ]
+    },
+    "TSP.Reference": {
+      "name": "TSP.Reference",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "identifier"
+        },
+        {
+          "name": "deprecated_type",
+          "number": 2,
+          "type": "INT32",
+          "repeated": false,
+          "jsonName": "deprecatedType"
+        },
+        {
+          "name": "deprecated_is_external",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "deprecatedIsExternal"
+        }
+      ]
+    },
+    "TSP.DataReference": {
+      "name": "TSP.DataReference",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "identifier"
+        }
+      ]
+    },
+    "TSP.Point": {
+      "name": "TSP.Point",
+      "fields": [
+        {
+          "name": "x",
+          "number": 1,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "x"
+        },
+        {
+          "name": "y",
+          "number": 2,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "y"
+        }
+      ]
+    },
+    "TSP.Size": {
+      "name": "TSP.Size",
+      "fields": [
+        {
+          "name": "width",
+          "number": 1,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "width"
+        },
+        {
+          "name": "height",
+          "number": 2,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "height"
+        }
+      ]
+    },
+    "TSP.Range": {
+      "name": "TSP.Range",
+      "fields": [
+        {
+          "name": "location",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "location"
+        },
+        {
+          "name": "length",
+          "number": 2,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "length"
+        }
+      ]
+    },
+    "TSP.Date": {
+      "name": "TSP.Date",
+      "fields": [
+        {
+          "name": "seconds",
+          "number": 1,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "seconds"
+        }
+      ]
+    },
+    "TSP.IndexSet": {
+      "name": "TSP.IndexSet",
+      "fields": [
+        {
+          "name": "ranges",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Range",
+          "repeated": true,
+          "jsonName": "ranges"
+        }
+      ]
+    },
+    "TSP.Color": {
+      "name": "TSP.Color",
+      "fields": [
+        {
+          "name": "model",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".TSP.Color.ColorModel",
+          "repeated": false,
+          "jsonName": "model"
+        },
+        {
+          "name": "r",
+          "number": 3,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "r"
+        },
+        {
+          "name": "g",
+          "number": 4,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "g"
+        },
+        {
+          "name": "b",
+          "number": 5,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "b"
+        },
+        {
+          "name": "a",
+          "number": 6,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "a"
+        },
+        {
+          "name": "c",
+          "number": 7,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "c"
+        },
+        {
+          "name": "m",
+          "number": 8,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "m"
+        },
+        {
+          "name": "y",
+          "number": 9,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "y"
+        },
+        {
+          "name": "k",
+          "number": 10,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "k"
+        },
+        {
+          "name": "w",
+          "number": 11,
+          "type": "FLOAT",
+          "repeated": false,
+          "jsonName": "w"
+        }
+      ]
+    },
+    "TSP.Path": {
+      "name": "TSP.Path",
+      "fields": [
+        {
+          "name": "elements",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Path.Element",
+          "repeated": true,
+          "jsonName": "elements"
+        }
+      ]
+    },
+    "TSP.Path.Element": {
+      "name": "TSP.Path.Element",
+      "fields": [
+        {
+          "name": "type",
+          "number": 1,
+          "type": "ENUM",
+          "typeName": ".TSP.Path.ElementType",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "points",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Point",
+          "repeated": true,
+          "jsonName": "points"
+        }
+      ]
+    },
+    "TSP.ReferenceDictionary": {
+      "name": "TSP.ReferenceDictionary",
+      "fields": [
+        {
+          "name": "entries",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.ReferenceDictionary.Entry",
+          "repeated": true,
+          "jsonName": "entries"
+        }
+      ]
+    },
+    "TSP.ReferenceDictionary.Entry": {
+      "name": "TSP.ReferenceDictionary.Entry",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "key"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "TSP.PasteboardObject": {
+      "name": "TSP.PasteboardObject",
+      "fields": [
+        {
+          "name": "stylesheet",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "stylesheet"
+        },
+        {
+          "name": "drawables",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": true,
+          "jsonName": "drawables"
+        },
+        {
+          "name": "styles",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": true,
+          "jsonName": "styles"
+        },
+        {
+          "name": "theme",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "theme"
+        },
+        {
+          "name": "wp_storage",
+          "number": 5,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "wpStorage"
+        },
+        {
+          "name": "guide_storage",
+          "number": 9,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "guideStorage"
+        },
+        {
+          "name": "app_native_object",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": false,
+          "jsonName": "appNativeObject"
+        },
+        {
+          "name": "is_text_primary",
+          "number": 7,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isTextPrimary"
+        },
+        {
+          "name": "is_smart",
+          "number": 8,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isSmart"
+        }
+      ]
+    },
+    "TSP.ObjectContainer": {
+      "name": "TSP.ObjectContainer",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "identifier"
+        },
+        {
+          "name": "objects",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".TSP.Reference",
+          "repeated": true,
+          "jsonName": "objects"
+        }
+      ]
+    },
+    "TSP.ArchiveInfo": {
+      "name": "TSP.ArchiveInfo",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "identifier"
+        },
+        {
+          "name": "message_infos",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".TSP.MessageInfo",
+          "repeated": true,
+          "jsonName": "messageInfos"
+        }
+      ]
+    },
+    "TSP.MessageInfo": {
+      "name": "TSP.MessageInfo",
+      "fields": [
+        {
+          "name": "type",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "version",
+          "number": 2,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "version"
+        },
+        {
+          "name": "length",
+          "number": 3,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "length"
+        },
+        {
+          "name": "field_infos",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".TSP.FieldInfo",
+          "repeated": true,
+          "jsonName": "fieldInfos"
+        },
+        {
+          "name": "object_references",
+          "number": 5,
+          "type": "UINT64",
+          "repeated": true,
+          "jsonName": "objectReferences"
+        },
+        {
+          "name": "data_references",
+          "number": 6,
+          "type": "UINT64",
+          "repeated": true,
+          "jsonName": "dataReferences"
+        }
+      ]
+    },
+    "TSP.FieldInfo": {
+      "name": "TSP.FieldInfo",
+      "fields": [
+        {
+          "name": "path",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".TSP.FieldPath",
+          "repeated": false,
+          "jsonName": "path"
+        },
+        {
+          "name": "type",
+          "number": 2,
+          "type": "ENUM",
+          "typeName": ".TSP.FieldInfo.Type",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "rule",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".TSP.FieldInfo.Rule",
+          "repeated": false,
+          "jsonName": "rule"
+        },
+        {
+          "name": "object_references",
+          "number": 4,
+          "type": "UINT64",
+          "repeated": true,
+          "jsonName": "objectReferences"
+        },
+        {
+          "name": "data_references",
+          "number": 5,
+          "type": "UINT64",
+          "repeated": true,
+          "jsonName": "dataReferences"
+        }
+      ]
+    },
+    "TSP.FieldPath": {
+      "name": "TSP.FieldPath",
+      "fields": [
+        {
+          "name": "path",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "path"
+        }
+      ]
+    },
+    "TSP.ComponentInfo": {
+      "name": "TSP.ComponentInfo",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "identifier"
+        },
+        {
+          "name": "preferred_locator",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "preferredLocator"
+        },
+        {
+          "name": "locator",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "locator"
+        },
+        {
+          "name": "read_version",
+          "number": 4,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "readVersion"
+        },
+        {
+          "name": "write_version",
+          "number": 5,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "writeVersion"
+        },
+        {
+          "name": "external_references",
+          "number": 6,
+          "type": "MESSAGE",
+          "typeName": ".TSP.ComponentExternalReference",
+          "repeated": true,
+          "jsonName": "externalReferences"
+        },
+        {
+          "name": "data_references",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".TSP.ComponentDataReference",
+          "repeated": true,
+          "jsonName": "dataReferences"
+        },
+        {
+          "name": "allows_duplicates_outside_of_document_package",
+          "number": 8,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "allowsDuplicatesOutsideOfDocumentPackage"
+        },
+        {
+          "name": "dirties_document_package",
+          "number": 9,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "dirtiesDocumentPackage"
+        },
+        {
+          "name": "is_stored_outside_object_archive",
+          "number": 10,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isStoredOutsideObjectArchive"
+        }
+      ]
+    },
+    "TSP.ComponentExternalReference": {
+      "name": "TSP.ComponentExternalReference",
+      "fields": [
+        {
+          "name": "component_identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "componentIdentifier"
+        },
+        {
+          "name": "object_identifier",
+          "number": 2,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "objectIdentifier"
+        },
+        {
+          "name": "is_weak",
+          "number": 3,
+          "type": "BOOL",
+          "repeated": false,
+          "jsonName": "isWeak"
+        }
+      ]
+    },
+    "TSP.ComponentDataReference": {
+      "name": "TSP.ComponentDataReference",
+      "fields": [
+        {
+          "name": "data_identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "dataIdentifier"
+        }
+      ]
+    },
+    "TSP.PackageMetadata": {
+      "name": "TSP.PackageMetadata",
+      "fields": [
+        {
+          "name": "last_object_identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "lastObjectIdentifier"
+        },
+        {
+          "name": "components",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".TSP.ComponentInfo",
+          "repeated": true,
+          "jsonName": "components"
+        },
+        {
+          "name": "datas",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".TSP.DataInfo",
+          "repeated": true,
+          "jsonName": "datas"
+        },
+        {
+          "name": "read_version",
+          "number": 5,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "readVersion"
+        },
+        {
+          "name": "write_version",
+          "number": 6,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "writeVersion"
+        }
+      ]
+    },
+    "TSP.PasteboardMetadata": {
+      "name": "TSP.PasteboardMetadata",
+      "fields": [
+        {
+          "name": "version",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "version"
+        },
+        {
+          "name": "app_name",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "appName"
+        },
+        {
+          "name": "datas",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".TSP.DataInfo",
+          "repeated": true,
+          "jsonName": "datas"
+        },
+        {
+          "name": "source_document_uuid",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "sourceDocumentUuid"
+        }
+      ]
+    },
+    "TSP.DataInfo": {
+      "name": "TSP.DataInfo",
+      "fields": [
+        {
+          "name": "identifier",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "identifier"
+        },
+        {
+          "name": "digest",
+          "number": 2,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "digest"
+        },
+        {
+          "name": "preferred_file_name",
+          "number": 3,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "preferredFileName"
+        },
+        {
+          "name": "file_name",
+          "number": 4,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "fileName"
+        },
+        {
+          "name": "document_resource_locator",
+          "number": 5,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "documentResourceLocator"
+        },
+        {
+          "name": "source_bookmark_data",
+          "number": 6,
+          "type": "BYTES",
+          "repeated": false,
+          "jsonName": "sourceBookmarkData"
+        },
+        {
+          "name": "pasteboard_external_file_path",
+          "number": 99,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "pasteboardExternalFilePath"
+        }
+      ]
+    },
+    "TSP.ViewStateMetadata": {
+      "name": "TSP.ViewStateMetadata",
+      "fields": [
+        {
+          "name": "version",
+          "number": 1,
+          "type": "UINT32",
+          "repeated": true,
+          "jsonName": "version"
+        },
+        {
+          "name": "document_version_uuid",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "documentVersionUuid"
+        },
+        {
+          "name": "component",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".TSP.ComponentInfo",
+          "repeated": false,
+          "jsonName": "component"
+        }
+      ]
+    },
+    "io.prometheus.client.LabelPair": {
+      "name": "io.prometheus.client.LabelPair",
+      "fields": [
+        {
+          "name": "name",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "name"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "io.prometheus.client.Gauge": {
+      "name": "io.prometheus.client.Gauge",
+      "fields": [
+        {
+          "name": "value",
+          "number": 1,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "io.prometheus.client.Counter": {
+      "name": "io.prometheus.client.Counter",
+      "fields": [
+        {
+          "name": "value",
+          "number": 1,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "value"
+        },
+        {
+          "name": "exemplar",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Exemplar",
+          "repeated": false,
+          "jsonName": "exemplar"
+        },
+        {
+          "name": "created_timestamp",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Timestamp",
+          "repeated": false,
+          "jsonName": "createdTimestamp"
+        }
+      ]
+    },
+    "io.prometheus.client.Quantile": {
+      "name": "io.prometheus.client.Quantile",
+      "fields": [
+        {
+          "name": "quantile",
+          "number": 1,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "quantile"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "io.prometheus.client.Summary": {
+      "name": "io.prometheus.client.Summary",
+      "fields": [
+        {
+          "name": "sample_count",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "sampleCount"
+        },
+        {
+          "name": "sample_sum",
+          "number": 2,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "sampleSum"
+        },
+        {
+          "name": "quantile",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Quantile",
+          "repeated": true,
+          "jsonName": "quantile"
+        },
+        {
+          "name": "created_timestamp",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Timestamp",
+          "repeated": false,
+          "jsonName": "createdTimestamp"
+        }
+      ]
+    },
+    "io.prometheus.client.Untyped": {
+      "name": "io.prometheus.client.Untyped",
+      "fields": [
+        {
+          "name": "value",
+          "number": 1,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "value"
+        }
+      ]
+    },
+    "io.prometheus.client.Histogram": {
+      "name": "io.prometheus.client.Histogram",
+      "fields": [
+        {
+          "name": "sample_count",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "sampleCount"
+        },
+        {
+          "name": "sample_count_float",
+          "number": 4,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "sampleCountFloat"
+        },
+        {
+          "name": "sample_sum",
+          "number": 2,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "sampleSum"
+        },
+        {
+          "name": "bucket",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Bucket",
+          "repeated": true,
+          "jsonName": "bucket"
+        },
+        {
+          "name": "created_timestamp",
+          "number": 15,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Timestamp",
+          "repeated": false,
+          "jsonName": "createdTimestamp"
+        },
+        {
+          "name": "schema",
+          "number": 5,
+          "type": "SINT32",
+          "repeated": false,
+          "jsonName": "schema"
+        },
+        {
+          "name": "zero_threshold",
+          "number": 6,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "zeroThreshold"
+        },
+        {
+          "name": "zero_count",
+          "number": 7,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "zeroCount"
+        },
+        {
+          "name": "zero_count_float",
+          "number": 8,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "zeroCountFloat"
+        },
+        {
+          "name": "negative_span",
+          "number": 9,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.BucketSpan",
+          "repeated": true,
+          "jsonName": "negativeSpan"
+        },
+        {
+          "name": "negative_delta",
+          "number": 10,
+          "type": "SINT64",
+          "repeated": true,
+          "jsonName": "negativeDelta"
+        },
+        {
+          "name": "negative_count",
+          "number": 11,
+          "type": "DOUBLE",
+          "repeated": true,
+          "jsonName": "negativeCount"
+        },
+        {
+          "name": "positive_span",
+          "number": 12,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.BucketSpan",
+          "repeated": true,
+          "jsonName": "positiveSpan"
+        },
+        {
+          "name": "positive_delta",
+          "number": 13,
+          "type": "SINT64",
+          "repeated": true,
+          "jsonName": "positiveDelta"
+        },
+        {
+          "name": "positive_count",
+          "number": 14,
+          "type": "DOUBLE",
+          "repeated": true,
+          "jsonName": "positiveCount"
+        },
+        {
+          "name": "exemplars",
+          "number": 16,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Exemplar",
+          "repeated": true,
+          "jsonName": "exemplars"
+        }
+      ]
+    },
+    "io.prometheus.client.Bucket": {
+      "name": "io.prometheus.client.Bucket",
+      "fields": [
+        {
+          "name": "cumulative_count",
+          "number": 1,
+          "type": "UINT64",
+          "repeated": false,
+          "jsonName": "cumulativeCount"
+        },
+        {
+          "name": "cumulative_count_float",
+          "number": 4,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "cumulativeCountFloat"
+        },
+        {
+          "name": "upper_bound",
+          "number": 2,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "upperBound"
+        },
+        {
+          "name": "exemplar",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Exemplar",
+          "repeated": false,
+          "jsonName": "exemplar"
+        }
+      ]
+    },
+    "io.prometheus.client.BucketSpan": {
+      "name": "io.prometheus.client.BucketSpan",
+      "fields": [
+        {
+          "name": "offset",
+          "number": 1,
+          "type": "SINT32",
+          "repeated": false,
+          "jsonName": "offset"
+        },
+        {
+          "name": "length",
+          "number": 2,
+          "type": "UINT32",
+          "repeated": false,
+          "jsonName": "length"
+        }
+      ]
+    },
+    "io.prometheus.client.Exemplar": {
+      "name": "io.prometheus.client.Exemplar",
+      "fields": [
+        {
+          "name": "label",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.LabelPair",
+          "repeated": true,
+          "jsonName": "label"
+        },
+        {
+          "name": "value",
+          "number": 2,
+          "type": "DOUBLE",
+          "repeated": false,
+          "jsonName": "value"
+        },
+        {
+          "name": "timestamp",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".google.protobuf.Timestamp",
+          "repeated": false,
+          "jsonName": "timestamp"
+        }
+      ]
+    },
+    "io.prometheus.client.Metric": {
+      "name": "io.prometheus.client.Metric",
+      "fields": [
+        {
+          "name": "label",
+          "number": 1,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.LabelPair",
+          "repeated": true,
+          "jsonName": "label"
+        },
+        {
+          "name": "gauge",
+          "number": 2,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Gauge",
+          "repeated": false,
+          "jsonName": "gauge"
+        },
+        {
+          "name": "counter",
+          "number": 3,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Counter",
+          "repeated": false,
+          "jsonName": "counter"
+        },
+        {
+          "name": "summary",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Summary",
+          "repeated": false,
+          "jsonName": "summary"
+        },
+        {
+          "name": "untyped",
+          "number": 5,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Untyped",
+          "repeated": false,
+          "jsonName": "untyped"
+        },
+        {
+          "name": "histogram",
+          "number": 7,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Histogram",
+          "repeated": false,
+          "jsonName": "histogram"
+        },
+        {
+          "name": "timestamp_ms",
+          "number": 6,
+          "type": "INT64",
+          "repeated": false,
+          "jsonName": "timestampMs"
+        }
+      ]
+    },
+    "io.prometheus.client.MetricFamily": {
+      "name": "io.prometheus.client.MetricFamily",
+      "fields": [
+        {
+          "name": "name",
+          "number": 1,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "name"
+        },
+        {
+          "name": "help",
+          "number": 2,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "help"
+        },
+        {
+          "name": "type",
+          "number": 3,
+          "type": "ENUM",
+          "typeName": ".io.prometheus.client.MetricType",
+          "repeated": false,
+          "jsonName": "type"
+        },
+        {
+          "name": "metric",
+          "number": 4,
+          "type": "MESSAGE",
+          "typeName": ".io.prometheus.client.Metric",
+          "repeated": true,
+          "jsonName": "metric"
+        },
+        {
+          "name": "unit",
+          "number": 5,
+          "type": "STRING",
+          "repeated": false,
+          "jsonName": "unit"
+        }
+      ]
     }
   },
   "enums": {
@@ -32815,6 +36101,172 @@
       "TASK_STATUS_FAILED",
       "TASK_STATUS_CHECKING",
       "TASK_STATUS_FETCHING_METADATA"
+    ],
+    "grpc.binarylog.v1.GrpcLogEntry.EventType": [
+      "EVENT_TYPE_UNKNOWN",
+      "EVENT_TYPE_CLIENT_HEADER",
+      "EVENT_TYPE_SERVER_HEADER",
+      "EVENT_TYPE_CLIENT_MESSAGE",
+      "EVENT_TYPE_SERVER_MESSAGE",
+      "EVENT_TYPE_CLIENT_HALF_CLOSE",
+      "EVENT_TYPE_SERVER_TRAILER",
+      "EVENT_TYPE_CANCEL"
+    ],
+    "grpc.binarylog.v1.GrpcLogEntry.Logger": [
+      "LOGGER_UNKNOWN",
+      "LOGGER_CLIENT",
+      "LOGGER_SERVER"
+    ],
+    "grpc.binarylog.v1.Address.Type": [
+      "TYPE_UNKNOWN",
+      "TYPE_IPV4",
+      "TYPE_IPV6",
+      "TYPE_UNIX"
+    ],
+    "proxypass.RequestBodyType": [
+      "None",
+      "JSON"
+    ],
+    "title.TaskStatus": [
+      "TASK_STATUS_UNSPECIFIED",
+      "TASK_STATUS_RUNNING",
+      "TASK_STATUS_COMPLETED",
+      "TASK_STATUS_FAILED"
+    ],
+    "title.TaskErrorCode": [
+      "TASK_ERROR_CODE_UNSPECIFIED",
+      "TASK_ERROR_CODE_INVALID_ARGUMENT",
+      "TASK_ERROR_CODE_CANCELLED",
+      "TASK_ERROR_CODE_INTERNAL"
+    ],
+    "title.OrderType": [
+      "ORDER_TYPE_UNSPECIFIED",
+      "ORDER_TYPE_CLASS",
+      "ORDER_TYPE_LAST_ACCESS_TIME",
+      "ORDER_TYPE_NAME",
+      "ORDER_TYPE_SIZE",
+      "ORDER_TYPE_MODIFIED_TIME",
+      "ORDER_TYPE_CREATED_TIME",
+      "ORDER_TYPE_DIR_FIRST"
+    ],
+    "title.SortDirection": [
+      "SORT_DIRECTION_UNSPECIFIED",
+      "SORT_DIRECTION_ASC",
+      "SORT_DIRECTION_DESC"
+    ],
+    "title.FileDirPriority": [
+      "FILE_DIR_PRIORITY_UNSPECIFIED",
+      "FILE_DIR_PRIORITY_DIRECTORY_FIRST",
+      "FILE_DIR_PRIORITY_FILE_FIRST"
+    ],
+    "title.FileClassCode": [
+      "FILE_CLASS_CODE_UNSPECIFIED",
+      "FILE_CLASS_CODE_DIR",
+      "FILE_CLASS_CODE_DOC",
+      "FILE_CLASS_CODE_IMG",
+      "FILE_CLASS_CODE_VIDEO",
+      "FILE_CLASS_CODE_AUDIO",
+      "FILE_CLASS_CODE_COMPRESSED_FILE",
+      "FILE_CLASS_CODE_OTHER",
+      "FILE_CLASS_CODE_APP",
+      "FILE_CLASS_CODE_HELP",
+      "FILE_CLASS_CODE_DOC_FROM_CONTENT_SEARCH"
+    ],
+    "title.FolderType": [
+      "FOLDER_TYPE_HOME_UNSPECIFIED",
+      "FOLDER_TYPE_ORDINARY",
+      "FOLDER_TYPE_ENCRYPT",
+      "FOLDER_TYPE_USB",
+      "FOLDER_TYPE_ISO",
+      "FOLDER_TYPE_EXTERNAL",
+      "FOLDER_TYPE_QUICK",
+      "FOLDER_TYPE_SHARE",
+      "FOLDER_TYPE_NET",
+      "FOLDER_TYPE_HOMES",
+      "FOLDER_TYPE_ROOT_SHARE_FOLDER",
+      "FOLDER_TYPE_ROOT_NET_FOLDER",
+      "FOLDER_TYPE_ROOT_IOS_FOLDER",
+      "FOLDER_TYPE_ROOT_EXTERNAL",
+      "FOLDER_TYPE_SD_CARD",
+      "FOLDER_TYPE_ROOT_HOMES"
+    ],
+    "appinfo.InstallStatus": [
+      "INSTALL_STATUS_NOT_INSTALLED",
+      "INSTALL_STATUS_INSTALLED",
+      "INSTALL_STATUS_NEED_UPDATE",
+      "INSTALL_STATUS_NEED_REPAIR"
+    ],
+    "appinfo.AppType": [
+      "APP_TYPE_SYSTEM",
+      "APP_TYPE_ALONE",
+      "APP_TYPE_THIRD_PARTY",
+      "APP_TYPE_DRIVER"
+    ],
+    "appinfo.UpdatePolicy": [
+      "DISABLE_AUTO_UPDATE",
+      "IMPORTANT_VERSION",
+      "ALL_VERSION",
+      "SPECIFIC_APP_VERSION"
+    ],
+    "appinfo.OpenType": [
+      "OPEN_TYPE_INNER",
+      "OPEN_TYPE_TAB"
+    ],
+    "appinfo.LinkType": [
+      "LINK_TYPE_UNSPECIFIED",
+      "LINK_TYPE_UGLINK",
+      "LINK_TYPE_LOCAL",
+      "LINK_TYPE_P2P",
+      "LINK_TYPE_DDNS"
+    ],
+    "appinfo.AccessType": [
+      "ACCESS_TYPE_INNER",
+      "ACCESS_TYPE_PORT",
+      "ACCESS_TYPE_PORTAL",
+      "ACCESS_TYPE_UGLINK_TRANS",
+      "ACCESS_TYPE_DOCKER",
+      "ACCESS_TYPE_DISABLE_REMOTE"
+    ],
+    "appinfo.DisableType": [
+      "DISABLE_TYPE_UNSPECIFIED",
+      "DISABLE_TYPE_DOCKER_INVALID_PORT_RANGE"
+    ],
+    "TSP.DatabaseImageDataArchive.ImageType": [
+      "unknown",
+      "bitmap",
+      "pdf"
+    ],
+    "TSP.Color.ColorModel": [
+      "rgb",
+      "cmyk",
+      "white"
+    ],
+    "TSP.Path.ElementType": [
+      "moveTo",
+      "lineTo",
+      "quadCurveTo",
+      "curveTo",
+      "closeSubpath"
+    ],
+    "TSP.FieldInfo.Type": [
+      "Value",
+      "ObjectReference",
+      "DataReference",
+      "Message"
+    ],
+    "TSP.FieldInfo.Rule": [
+      "IgnoreAndDrop",
+      "IgnoreAndPreserve",
+      "MustUnderstand",
+      "NotSupported"
+    ],
+    "io.prometheus.client.MetricType": [
+      "COUNTER",
+      "GAUGE",
+      "SUMMARY",
+      "UNTYPED",
+      "HISTOGRAM",
+      "GAUGE_HISTOGRAM"
     ]
   },
   "services": {

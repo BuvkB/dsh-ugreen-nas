@@ -208,7 +208,18 @@ OpenCLI 不只有一种模式，app_serv 的 pubopen handler 提供：
    ugreen.opencli.grpc-stream.v1
    ~~~
 
-   请求头需要 Upgrade: websocket、Connection: Upgrade、Sec-WebSocket-Protocol: ugreen.opencli.grpc-stream.v1。适合日志持续跟踪、目录递归等长流。未提供目标方法时会返回 target method is not provided。
+   请求头需要 Upgrade: websocket、Connection: Upgrade、Sec-WebSocket-Protocol: ugreen.opencli.grpc-stream.v1，并且同样只接受 `Authorization: Bearer <访问令牌>`。URL 与 unary 相同，只是把 scheme 换成 wss://（或 ws://）。未提供目标方法时会返回 target method is not provided。
+
+   **帧格式不是 gRPC-Web。** 每条 WebSocket binary message 是 `1 字节 frame type + protobuf payload`：
+
+   | Frame type | 方向 | payload | 说明 |
+   |---:|---|---|---|
+   | 0x01 | 双向 | protobuf | DATA：请求或响应消息 |
+   | 0x02 | 客户端→服务端 | 空 | HALF_CLOSE：请求发送结束 |
+   | 0x03 | 客户端→服务端 | 空 | CANCEL：取消流 |
+   | 0x13 | 服务端→客户端 | 空或 protobuf | STATUS：空 payload 表示正常结束；非空为 `{ code: int32, message: string }` 错误 |
+
+   实测流程：连接 → 发送 `0x01 + request` → 发送 `0x02` → 服务端连续返回 `0x01 + response` → 最后返回空 `0x13` 并正常关闭。`search.Search/CreateTitleStreamTask`、`app.App/UninstallStream`、`app.App/UpdateStream` 都使用这套帧格式。
 
 3. Upload（文件上传）
    Content-Type: multipart/form-data，app_serv 的 upload_handler.go 处理分片；返回 UploadResponse。下载/上传文件走独立消息，不建议把大文件塞进普通 unary。
@@ -501,6 +512,7 @@ dsh-ugreen-nas/
 | accessToken | secret | 访问令牌；只保存在本机 settings，不回显给模型 |
 | timeoutMs | natural | 请求超时，默认 15000ms |
 | rejectUnauthorized | boolean | 自签证书保持 false |
+| mode | full / readonly | full 注册全部工具，readonly 只注册只读工具 |
 
 地址归一化规则（normalizeEndpoint）：
 
@@ -511,30 +523,32 @@ dsh-ugreen-nas/
 
 ### 6.3 工具列表
 
-v0.2.3 注册 51 个工具，覆盖 8 大类权限：
+v0.3.0 注册 59 个工具，覆盖 8 大类 70 项权限：
 
 | 大类 | 工具数 | 代表工具 |
 |---|---:|---|
 | 连接 | 1 | ugreen_connection_test |
-| 文件 | 15 | ugreen_file_stat / list / read / write / mkdir / rename / move / delete / restore / tag / quota |
-| 存储 | 1 | ugreen_storage_info |
-| 任务 | 1 | ugreen_task_overview |
-| 应用 | 4 | ugreen_app_status / install / start / stop |
-| Docker | 17 | ugreen_docker_list / logs / start / stop / compose_* / image_* |
+| 文件 | 16 | ugreen_file_stat / list / read / write / mkdir / rename / move / delete / restore / tag / quota |
+| 存储 | 2 | ugreen_storage_info / smart |
+| 任务 | 2 | ugreen_task_overview / metrics |
+| 应用 | 7 | ugreen_app_status / list / install / uninstall / update / start / stop |
+| Docker | 18 | ugreen_docker_list / logs / start / stop / compose_* / image_* / check |
 | 下载 | 6 | ugreen_download_list / create / pause / resume / retry / remove |
 | 控制面板 | 6 | ugreen_system_info / user_list / user_create / group_add_members / hardware_info / network_info |
+| 全局搜索 | 1 | ugreen_search |
 
 具体每个工具的 socket_id 与 service/method 映射见 lib/tools.js；权限与工具的对应关系见 README 的 70 项权限总表。
 
 ### 6.4 模式与危险操作
 
-v0.2 起覆盖 8 大类全部 70 项权限对应的能力（51 个工具）：
+v0.3.0 覆盖 8 大类全部 70 项权限对应的能力（59 个工具）：
 
-- mode 设置：full（默认，按令牌权限注册全部工具）/ readonly（仅注册只读工具，共 21 个）
-- 令牌能力探测（lib/capabilities.js）：对 7 个 socket 各探测一次廉价读，未授予的大类对应工具不注册；结果缓存 10 分钟
+- mode 设置：full（默认，按令牌权限注册全部工具）/ readonly（仅注册只读工具）
+- 令牌能力探测（lib/capabilities.js）：对 8 个 socket 各探测一次廉价读，未授予的大类对应工具不注册；结果缓存 10 分钟
 - 危险操作（删除、卸载、停机、重建类）在工具描述中带【写/危险操作】标注；逐次确认交给 DSH 的工具审批策略
 - 403 错误消息带缺失的权限名，提示在 NAS 端重建令牌
-- 应用卸载/更新（UninstallStream/UpdateStream）与 Filemgr/UploadFile 依赖 WebSocket 流式/分片上传，暂未实现（见 9.2）
+- 服务端流式方法（`CreateTitleStreamTask`、`UninstallStream`、`UpdateStream`）由 WebSocket 流式客户端 `OpenCLIClient.callStream` 处理，见 3.4
+- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现；常规写文件走 `WriteFile`
 
 ### 6.5 错误处理
 
@@ -651,7 +665,7 @@ service download.DownloadService
 1. 令牌是 bearer credential：任何拿到完整令牌的人都能在权限范围内调用，不要写入代码、README、日志或对话。
 2. 插件设置中 accessToken 标记 role('secret')：DSH 设置页不回显给模型；但仍存在本机 settings 文件，注意文件权限。
 3. 不要使用登录 cookie 代替访问令牌：登录 cookie 是网页会话，权限更大、生命周期不同；OpenCLI 明确拒绝 cookie token。
-4. 只读优先：如果不需要写操作，把插件 mode 设为 readonly（只注册 21 个只读工具），或直接给只读令牌。
+4. 只读优先：如果不需要写操作，把插件 mode 设为 readonly（只注册只读工具），或直接给只读令牌。
 5. 最小权限令牌：正式使用时建议新建只读令牌，只勾选 Files/Storage/Task Manager 的 read 权限，避免把 Docker 启停、删除等能力交给 Agent。
 6. HTTPS：默认 rejectUnauthorized=false 是为了兼容 NAS 自签证书；如果 NAS 有可信证书，建议设为 true。
 7. 外网访问：UGREENlink/DDNS 只是传输通道，不改变 token 权限；不要把 OpenCLI 端口直接暴露到公网而不加额外防护。
@@ -662,7 +676,7 @@ service download.DownloadService
 
 ### 9.1 当前版本限制
 
-- 应用卸载/更新与 Filemgr/UploadFile（WebSocket 流式/分片上传）暂未实现，其余能力已覆盖
+- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现，常规写文件走 `WriteFile`；其余 OpenCLI 非流式能力已覆盖，3 个服务端流式方法（应用卸载/更新、全局搜索）已接入
 - 没有自定义 sidebar 面板；配置页经 plugins.bundle.config 提供
 - catalog 基于 UGOS 1.21.0.80330；升级 NAS 系统后可能需要重新提取
 - Readdir 是 server-streaming，不能用 unary 调用；文件列表改用 CategoryOrFileDirList
@@ -673,11 +687,7 @@ service download.DownloadService
 - ugreen_file_find（Find + GetFindResult）
 - ugreen_file_download（DownloadFile，流式/落盘）
 - ugreen_file_upload（multipart upload）
-- ugreen_storage_smart（AllDiskSmartInfo）
-- ugreen_task_process（GetProcessResource）
-- ugreen_docker_compose（ComposeProjectList）
-- ugreen_search（SearchEngineService/StreamSearch）
-- 写操作（明确要求、单独审批、单独令牌）
+- 文件搜索的枚举参数（FileClassCode / 排序方向）细化
 
 ### 9.3 版本升级流程
 

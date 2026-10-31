@@ -13,6 +13,7 @@ DSH（DeepSeek Harness）的绿联 NAS 连接器：用「访问令牌」调用 U
 ~~~bash
 git clone https://github.com/BuvkB/dsh-ugreen-nas.git
 cd dsh-ugreen-nas
+npm install
 bash scripts/build.sh
 # 方式一：插件管理页选择本地目录安装
 # 方式二：在 profile 的 package.json 加依赖（link:/path/to/dsh-ugreen-nas），
@@ -27,8 +28,9 @@ bash scripts/build.sh
 | accessToken | <访问令牌> | 绿联控制面板创建的访问令牌；secret 字段不会回显 |
 | timeoutMs | 15000 | 请求超时 |
 | rejectUnauthorized | false | 自签证书保持 false |
+| mode | full | full 注册全部工具，readonly 只注册只读工具 |
 
-## 工具（56 个，跟随令牌权限自动增减）
+## 工具（59 个，跟随令牌权限自动增减）
 
 | 大类 | 工具 |
 |---|---|
@@ -36,12 +38,30 @@ bash scripts/build.sh
 | 文件 | ugreen_file_stat · ugreen_file_list · ugreen_file_read · ugreen_file_write · ugreen_file_mkdir · ugreen_file_share_mkdir · ugreen_file_rename · ugreen_file_move · ugreen_file_delete · ugreen_file_restore · ugreen_file_chtimes · ugreen_file_tag_set · ugreen_file_tag_link · ugreen_file_tag_list · ugreen_file_tag_delete · ugreen_file_quota |
 | 存储 | ugreen_storage_info · ugreen_storage_smart |
 | 任务 | ugreen_task_overview · ugreen_task_metrics |
-| 应用 | ugreen_app_status · ugreen_app_list · ugreen_app_install · ugreen_app_start · ugreen_app_stop |
+| 应用 | ugreen_app_status · ugreen_app_list · ugreen_app_install · ugreen_app_uninstall · ugreen_app_update · ugreen_app_start · ugreen_app_stop |
 | Docker | ugreen_docker_list · ugreen_docker_logs · ugreen_docker_start · ugreen_docker_stop · ugreen_docker_restart · ugreen_docker_compose_list · ugreen_docker_compose_logs · ugreen_docker_compose_create · ugreen_docker_compose_start · ugreen_docker_compose_stop · ugreen_docker_compose_restart · ugreen_docker_compose_delete · ugreen_docker_image_search · ugreen_docker_image_list · ugreen_docker_image_pull · ugreen_docker_app_usage · ugreen_docker_app_rebuild · ugreen_docker_check |
 | 下载 | ugreen_download_list · ugreen_download_create · ugreen_download_pause · ugreen_download_resume · ugreen_download_retry · ugreen_download_remove |
 | 控制面板 | ugreen_system_info · ugreen_user_list · ugreen_user_create · ugreen_group_add_members · ugreen_hardware_info · ugreen_network_info |
+| 全局搜索 | ugreen_search |
 
 危险操作（删除、卸载、停机、重建类）在工具描述里带【写/危险操作】标注；是否逐步确认由 DSH 自身的工具审批策略决定。
+### 59 个工具如何覆盖 70 项权限
+
+“70”是 NAS 端可勾选的权限小类数量，不是工具数量：一个工具可以覆盖多项权限（例如 `ugreen_storage_info` 一次查磁盘、存储池、卷三项），也有一个权限拆成多个工具的情况（例如文件标签的增删查）。当前 59 个工具覆盖全部 70 项权限：
+
+| 大类 | 权限数 | 工具数 | 说明 |
+|---|---:|---:|---|
+| 应用中心 | 7 | 7 | 状态/列表/安装/卸载/更新/启停各一 |
+| 文件管理 | 15 | 16 | 列表与属性、读取、写入、目录、标签、配额拆开 |
+| 存储管理 | 4 | 2 | `ugreen_storage_info` 合并磁盘/池/卷，`ugreen_storage_smart` 单列 |
+| 任务管理 | 9 | 2 | 总览 + 按指标查询（CPU/GPU/内存/网络/磁盘/卷/服务/进程） |
+| Docker | 20 | 18 | 容器、Compose、镜像、资源占用，端口/目录/GPU 检查合并为一个工具 |
+| 下载中心 | 6 | 6 | 列表、创建、暂停、恢复、重试、移除各一 |
+| 控制面板 | 8 | 6 | 系统信息合并身份/更新状态，网络信息合并通用/网卡 |
+| 全局搜索 | 1 | 1 | `ugreen_search` 走 `CreateTitleStreamTask` 流式搜索 |
+| **合计** | **70** | **59** | 覆盖全部 70 项 |
+
+
 
 ## 权限如何生效
 

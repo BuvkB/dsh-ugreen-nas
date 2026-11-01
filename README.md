@@ -79,7 +79,7 @@
 ## 文档
 
 - 协议逆向与流式帧格式、protobuf 提取方法：[docs/ugreen-opencli-protocol.md](docs/ugreen-opencli-protocol.md)
-- 开发：`npm install && bash scripts/build.sh`，回归 `node test/smoke.test.mjs`
+- 开发：`npm install && bash scripts/build.sh`，回归 `npm test`（冒烟 + 离线单元测试）
 
 ## 附录
 

@@ -55,6 +55,7 @@ for file in lib/*.js scripts/*.mjs test/*.mjs; do
   echo "  ok $file"
 done
 
-echo "=== smoke test ==="
+echo "=== tests ==="
 node test/smoke.test.mjs
+node test/unit.test.mjs
 echo "=== build complete: $ROOT ==="

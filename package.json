@@ -1,6 +1,6 @@
 {
   "name": "dsh-ugreen-nas",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "UGREEN NAS OpenCLI connector for DeepSeek Harness: scoped access-token auth over HTTPS, permission-aware tools covering the full 70-permission surface (files, storage, tasks, docker, downloads, apps, control panel).",
   "type": "module",
   "main": "./lib/index.js",
@@ -31,8 +31,8 @@
     "opencli"
   ],
   "peerDependencies": {
-    "@deepseek-ai/dsh-tools": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0",
-    "@deepseek-ai/dsh-typert-protocol": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0",
+    "@deepseek-ai/dsh-tools": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0 || ^0.2.2-0",
+    "@deepseek-ai/dsh-typert-protocol": "^0.1.0-0 || ^0.2.0-0 || ^0.2.1-0 || ^0.2.2-0",
     "@deepseek-ai/schemastery": "^3.18.0"
   },
   "peerDependenciesMeta": {

@@ -537,7 +537,7 @@ v0.4.1 注册 60 个工具，覆盖 8 大类 70 项权限：
 | 控制面板 | 6 | ugreen_system_info / user_list / user_create / group_add_members / hardware_info / network_info |
 | 全局搜索 | 1 | ugreen_search |
 
-具体每个工具的 socket_id 与 service/method 映射见 lib/tools.js；权限与工具的对应关系见 README 的 70 项权限总表。
+具体每个工具的 socket_id 与 service/method 映射见 lib/tools.js；权限与工具的对应关系见本文件第 13 节。
 
 ### 6.4 模式与危险操作
 
@@ -758,3 +758,78 @@ UGREEN_TOKEN='<访问令牌>' node test/smoke.test.mjs
 - Files CLI：/ugreen/@appstore/com.ugreen.filemgr/bin/ug-filesystem-cli
 - 访问令牌管理前端：/desktop/account-setting/assets/index-Dgx0DmSO.js
 - 访问令牌管理路由：/desktop/account-setting/#/localAccount/accessTokens
+
+## 13. 附录：70 项权限明细
+
+| 大类 | 权限 | 操作 | 说明 |
+|---|---|---|---|
+| App Center | app_detail | read | 查看应用、版本与运行状态 |
+| App Center | app_search_and_available_updates | read | 搜索应用与可用更新 |
+| App Center | app_install_stream | write | 安装指定应用 |
+| App Center | app_uninstall_stream | delete | 卸载指定应用 |
+| App Center | app_update_stream | write | 更新指定应用 |
+| App Center | app_stop | execute | 停用指定应用 |
+| App Center | app_start | execute | 启动指定应用 |
+| Control Panel | ctl_user_group_list | read | 查看账号与用户组列表 |
+| Control Panel | ctl_user_create | write | 创建普通账号并设置密码 |
+| Control Panel | ctl_group_add_members | write | 向用户组添加成员 |
+| Control Panel | ctl_hardware_power | read | 查看风扇/电源/UPS 等硬件设置 |
+| Control Panel | ctl_os_identity | read | 查看设备型号与系统版本 |
+| Control Panel | ctl_os_update_status | read | 查询系统更新状态与可用版本 |
+| Control Panel | ctl_network_general | read | 查看网关、DNS、代理等通用网络配置 |
+| Control Panel | ctl_network_connection | read | 查看网卡状态与 IP 配置 |
+| Files | filemgr_list_and_attr | read | 浏览文件列表与属性 |
+| Files | filemgr_read_and_download | read | 读取与下载文件内容 |
+| Files | filemgr_upload | write | 上传文件 |
+| Files | filemgr_create_dir | write | 新建文件夹 |
+| Files | filemgr_create_share_dir | write | 新建共享文件夹 |
+| Files | filemgr_chtimes | write | 修改文件或目录时间戳 |
+| Files | filemgr_cp_move_path | write | 复制或移动文件 |
+| Files | filemgr_rename | write | 重命名文件 |
+| Files | filemgr_delete | delete | 删除文件 |
+| Files | filemgr_recover_from_recycle | write | 从回收站恢复文件 |
+| Files | filemgr_get_quota | read | 查询空间配额 |
+| Files | filemgr_set_quota | execute | 设置空间配额 |
+| Files | filemgr_get_tag | read | 获取标签信息 |
+| Files | filemgr_add_tag | write | 添加或设置标签 |
+| Files | filemgr_delete_tag | delete | 删除标签 |
+| Universal Search | title_search_task | read | 按名称/类型/大小/时间搜索文件 |
+| Storage | storage.disk.list | read | 查看内部磁盘列表 |
+| Storage | storage.pool.list | read | 查看存储池列表 |
+| Storage | storage.disk.smart.all | read | 读取所有硬盘 S.M.A.R.T. 诊断 |
+| Storage | storage.volume.list | read | 查看卷列表 |
+| Task Manager | taskmgr_get_run_overview | read | 查看 CPU/内存/风扇/网络/磁盘总览 |
+| Task Manager | taskmgr_get_cpu_metric | read | 查看 CPU 占用与温度 |
+| Task Manager | taskmgr_get_gpu_metric | read | 查看 GPU 占用 |
+| Task Manager | taskmgr_get_mem_metric | read | 查看内存占用 |
+| Task Manager | taskmgr_get_net_traffic | read | 查看网络收发速率 |
+| Task Manager | taskmgr_get_disk_metric | read | 查看硬盘读写速率 |
+| Task Manager | taskmgr_get_volume_metric | read | 查看卷读写速率 |
+| Task Manager | taskmgr_get_service_resource | read | 查看各服务资源占用 |
+| Task Manager | taskmgr_get_process_resource | read | 查看各进程资源占用 |
+| Docker | docker_image_search | read | 在镜像仓库搜索镜像 |
+| Docker | docker_image_list | read | 查看本地镜像 |
+| Docker | docker_image_pull | write | 拉取指定镜像 |
+| Docker | docker_container_list | read | 查看容器与运行状态 |
+| Docker | docker_container_start | execute | 启动容器 |
+| Docker | docker_container_stop | execute | 停止容器 |
+| Docker | docker_container_restart | execute | 重启容器 |
+| Docker | docker_container_logs | read | 查看容器日志 |
+| Docker | docker_compose_project_create | write | 创建 Compose 项目 |
+| Docker | docker_compose_project_list | read | 查看 Compose 项目 |
+| Docker | docker_compose_project_logs | read | 查看 Compose 项目日志 |
+| Docker | docker_compose_project_start | execute | 启动 Compose 项目 |
+| Docker | docker_compose_project_stop | execute | 停止 Compose 项目 |
+| Docker | docker_compose_project_restart | execute | 重启 Compose 项目 |
+| Docker | docker_compose_project_delete | delete | 删除 Compose 项目及容器 |
+| Docker | docker_app_discrete_gpu_check | read | 检查容器应用的独显占用 |
+| Docker | docker_container_port_check | read | 检查容器端口占用 |
+| Docker | docker_container_directory_check | read | 检查容器目录占用 |
+| Docker | docker_app_usage | read | 查看容器应用资源占用 |
+| Docker | docker_app_rebuild | execute | 按配置强制重建容器应用 |
+| Downloads | download_task_create | write | 从链接或种子创建下载任务 |
+| Downloads | download_task_get | read | 查看下载任务状态与进度 |
+| Downloads | download_task_pause | write | 暂停下载任务 |
+| Downloads | download_task_resume | write | 恢复下载任务 |
+| Downloads | download_task_retry_failed | write | 重试失败的下载任务 |
+| Downloads | download_task_remove | delete | 移除下载任务（保留文件） |

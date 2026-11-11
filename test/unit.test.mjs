@@ -8,7 +8,15 @@ import { encodeMessage, decodeMessage } from '../lib/protobuf.js'
 import { Capabilities } from '../lib/capabilities.js'
 import { TOOLS } from '../lib/tools.js'
 import { normalizeAllowedRoots, isPathAllowed } from '../lib/paths.js'
-import { UgreenGateway } from '../lib/gateway.js'
+
+// gateway.js imports an optional DSH peer that is not installed in npm-only CI.
+// Keep the gateway test meaningful locally and skip it in a bare runner.
+let UgreenGateway
+try {
+  ({ UgreenGateway } = await import('../lib/gateway.js'))
+} catch (error) {
+  if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error
+}
 
 let passed = 0
 let failed = 0
@@ -205,7 +213,7 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
 }
 
 // --- settings gateway: save and unbind ---
-{
+if (UgreenGateway) {
   let settings = {
     endpoint: 'https://nas.example.com',
     accessToken: 'test-token',
@@ -225,6 +233,8 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
   check('gateway saves whitelist and role', saved.allowedRoots.join() === '/volume1/work' && saved.accessLevel === 'user' && saved.confirmMode === 'ask')
   await gateway.unbind()
   check('gateway unbind clears token and endpoint', settings.accessToken === '' && settings.endpoint === '')
+} else {
+  console.log('  (dsh-typert-protocol unavailable; gateway test skipped)')
 }
 console.log(`${passed} passed, ${failed} failed`)
 process.exit(failed ? 1 : 0)

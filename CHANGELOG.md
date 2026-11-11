@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- 修复：设置页固定在 720px 宽导致插件详情页上方 README/表格较宽、下方设置卡片明显偏窄。设置页现为 100% 跟随详情内容区宽度，左右边缘与上方内容对齐；加载骨架同步移除宽度上限。
+
 ## 0.4.0
 
 - 修复：`OpenCLIClient.call` 返回 `{value, raw, headers}` 时工具层未解包，导致 `ugreen_file_list` 恒返回空列表、`ugreen_file_read` 恒返回空内容、`append` 模式退化为覆盖旧文件，同时所有工具结果携带 raw protobuf Buffer（`ugreen_app_list` 单次约 1.46MB）。现在统一解包 `value`，工具结果不再泄漏原始字节。

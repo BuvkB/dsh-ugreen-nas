@@ -8,6 +8,7 @@ import { encodeMessage, decodeMessage } from '../lib/protobuf.js'
 import { Capabilities } from '../lib/capabilities.js'
 import { TOOLS } from '../lib/tools.js'
 import { normalizeAllowedRoots, isPathAllowed } from '../lib/paths.js'
+import { readFileSync } from 'node:fs'
 
 // gateway.js imports an optional DSH peer that is not installed in npm-only CI.
 // Keep the gateway test meaningful locally and skip it in a bare runner.
@@ -30,6 +31,11 @@ const throws = async (fn, marker = '') => {
 }
 
 console.log('dsh-ugreen-nas unit tests')
+
+// --- settings page layout ---
+const clientSource = readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8')
+check('settings page fills host content width', clientSource.includes('.ugn-page { width: 100%; box-sizing: border-box; margin: 0; padding: 12px 0 28px;'))
+check('settings page no longer caps at 720px', !clientSource.includes('max-width: 720px'))
 
 // --- normalizeEndpoint ---
 check('bare IP gets :9443', normalizeEndpoint('192.168.1.10') === 'https://192.168.1.10:9443')

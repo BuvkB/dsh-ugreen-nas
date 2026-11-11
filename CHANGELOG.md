@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0
+
+- 修复：`OpenCLIClient.call` 返回 `{value, raw, headers}` 时工具层未解包，导致 `ugreen_file_list` 恒返回空列表、`ugreen_file_read` 恒返回空内容、`append` 模式退化为覆盖旧文件，同时所有工具结果携带 raw protobuf Buffer（`ugreen_app_list` 单次约 1.46MB）。现在统一解包 `value`，工具结果不再泄漏原始字节。
+- 修复：`ugreen_app_install` 改用 `InstallStream` 并等待流结束，安装不再只返回受理状态；超时上限 5 分钟。
+- 修复：拆分 `ugreen_file_quota`（只读查询）与 `ugreen_file_quota_set`（`filemgr_set_quota` / execute，管理员），`mode=readonly` 不再暴露可设置配额的组合工具。
+- 新增：`allowedRoots` 目录白名单。文件读写、搜索、下载保存目录、配额、Compose 项目目录等都按绝对路径前缀校验；留空不额外限制。
+- 新增：`confirmMode` 高风险确认。写、删、执行类工具默认经 DSH `tools/pre-execute` 审批（`ask`），可显式设为 `off`；DSH「完全权限」档（approval: never）会直接拒绝审批、不会弹窗，插件按宿主策略 fail closed。
+- 新增：`accessLevel` 账号角色过滤。`admin` 注册全部工具；`user` 只注册文件、下载、全局搜索等非系统类工具，并额外隐藏共享文件夹、配额等管理员型文件工具。
+- 新增：设置页「解除绑定」按钮，清除本机访问令牌和 endpoint，回收插件的 NAS 通道。
+- 优化：能力探测改为设置页/「重新探测」按需触发，插件激活不再自动读取 NAS 目录或系统信息；权限未知时按可用处理，调用失败时由 NAS 403 指明缺失权限。
+- 优化：`ugreen_app_list` 只保留应用 id、名称、版本、更新状态等字段，避免多语言详情撑爆上下文；`ugreen_system_info` 对不可用的设备信息接口降级，不再整次失败。
+- 优化：设置页「高风险确认」的说明随「每次确认 / 直接执行」切换，放入固定高信息块，避免切换时文字长短导致布局跳动；每次确认用蓝色信息提示，直接执行用克制的琥珀色风险提示。
+- 文档：移除 README 中过时的设置页截图，避免插件详情页出现过大的空白留白。
+- 测试：新增 60 工具注册、返回解包、目录白名单、append 保旧、InstallStream、审批门等回归用例。
+
 ## 0.3.6
 
 - 修复：peerDependencies 声明支持范围补上 `^0.2.2-0`，显式声明支持 DSH 0.2.2（含 0.2.2-rc/alpha 预发布），内核兼容性门禁与 npm 安装口径一致，安装/更新不再误报不兼容。

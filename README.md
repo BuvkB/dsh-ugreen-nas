@@ -6,12 +6,12 @@
 
 ## 特点
 
-- **覆盖完整**：59 个工具覆盖 UGOS Pro 访问令牌的全部 70 项权限（8 个大类），连服务端流式的应用安装/卸载/更新和全局搜索也支持。
-- **权限即边界**：用 NAS 控制面板签发的「访问令牌」连接，不碰账号密码、不走 SSH；令牌没勾的能力，对应工具直接不注册。
-- **只读开关**：`mode=readonly` 一键只保留只读工具；删除、卸载、停机类操作带【写/危险操作】标注，逐步确认交给 DSH 的工具审批。
-- **状态可见**：设置页实时显示 8 个大类的「已授予 / 未授予」，一键重新探测。
-
-![设置页](docs/screenshot-settings.png)
+- **覆盖完整**：60 个工具覆盖 UGOS Pro 访问令牌的全部 70 项权限（8 个大类），连服务端流式的应用安装/卸载/更新和全局搜索也支持。
+- **权限即边界**：用 NAS 控制面板签发的「访问令牌」连接，不碰账号密码、不走 SSH；令牌没勾的能力，NAS 端会拒绝，设置页探测到未授予的大类后对应工具不注册。
+- **写操作必确认**：所有写、删、执行类工具带【写/危险操作】标注，并在 `confirmMode=ask`（默认）下经 DSH 审批后才执行；注意在 DSH「完全权限」档（approval: never）下，DSH 会直接拒绝审批、不会弹窗。`mode=readonly` 可一键只保留只读工具。
+- **目录白名单**：`allowedRoots` 可把文件、搜索、下载、配额等路径操作限制在指定绝对目录内。
+- **状态可见**：设置页显示 8 个大类的「已授予 / 未授予」，可重新探测。
+- **可解绑**：设置页「解除绑定」清除本机访问令牌和 NAS 地址，回收插件通道。
 
 ## 快速开始
 
@@ -30,6 +30,9 @@
 | endpoint | — | NAS 地址；裸 IP 自动补 https://:9443，也支持 UGREENlink / DDNS |
 | accessToken | — | 访问令牌（ugpoa_v1 开头），只存在本机设置，不回显 |
 | mode | full | full 注册全部工具；readonly 只注册只读工具 |
+| accessLevel | admin | admin=全部工具；user=仅文件、下载、全局搜索等非系统类工具 |
+| confirmMode | ask | 写/删/执行操作是否经 DSH 审批；完全权限档会直接拒绝、不弹窗；off=直接执行（不推荐） |
+| allowedRoots | [] | 文件目录白名单（绝对路径数组）；留空=不额外限制 |
 | timeoutMs | 15000 | 单次请求超时（毫秒） |
 | rejectUnauthorized | false | 自签证书保持关闭 |
 
@@ -47,12 +50,12 @@
 | 全局搜索 | 按名称、类型、大小、时间全盘搜文件 |
 
 <details>
-<summary>全部 59 个工具名</summary>
+<summary>全部 60 个工具名</summary>
 
 | 大类 | 工具 |
 |---|---|
 | 连接 | ugreen_connection_test |
-| 文件 | ugreen_file_stat · list · read · write · mkdir · share_mkdir · rename · move · delete · restore · chtimes · tag_set · tag_link · tag_list · tag_delete · quota（均带 ugreen_ 前缀） |
+| 文件 | ugreen_file_stat · list · read · write · mkdir · share_mkdir · rename · move · delete · restore · chtimes · tag_set · tag_link · tag_list · tag_delete · quota · quota_set（均带 ugreen_ 前缀） |
 | 存储 | ugreen_storage_info · ugreen_storage_smart |
 | 任务 | ugreen_task_overview · ugreen_task_metrics |
 | 应用 | ugreen_app_status · list · install · uninstall · update · start · stop（均带 ugreen_ 前缀） |
@@ -65,7 +68,7 @@
 
 ## 权限怎么算
 
-- NAS 端令牌按 8 个大类勾选，共 70 项小类。插件激活时逐大类探测一次：没授予的大类不注册工具；细到单项的校验在 NAS 端，比如同一大类勾了删除没勾写入，调用时会返回 403 并指名缺哪项。
+- NAS 端令牌按 8 个大类勾选，共 70 项小类。插件激活本身不发起探测；打开设置页或点「重新探测」时逐大类探测一次，没授予的大类不注册工具。细到单项的校验在 NAS 端，比如同一大类勾了删除没勾写入，调用时会返回 403 并指名缺哪项。
 - 改权限要在 NAS 端重建令牌，插件侧重新探测即可，不用改配置。
 - 70 项明细见文末附录。
 
@@ -73,7 +76,8 @@
 
 - 访问令牌等于它勾选的权限：日常建议只勾 read（只读令牌），需要写操作再单独签发。
 - 令牌只存在本机插件设置里（secret 字段），不要写进代码、日志或对话。
-- Files 权限按账号授权，不支持按文件夹限权：勾了 Files 的 read，令牌就能读到该账号可见的所有文件。
+- Files 权限按账号授权；插件额外提供 `allowedRoots` 目录白名单，配置后所有文件、搜索、下载、配额类路径操作都按绝对路径前缀校验，避免令牌范围过宽。
+- `confirmMode=ask`（默认）下，写/删/执行类工具会交 DSH 审批；在 DSH「完全权限」档（`danger-full-access` / `approval: never`）下，DSH 会直接拒绝审批、不会弹窗，这是宿主的安全边界，插件不会绕过。`accessLevel=user` 可隐藏 Docker、应用、存储、任务与账号管理等系统类工具。
 - NAS 用自签证书时保持「校验 HTTPS 证书」关闭；换可信证书后再打开。
 
 ## 文档

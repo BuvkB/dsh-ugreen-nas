@@ -3,10 +3,12 @@
  * wire codec, capability bookkeeping and the argument guards in tools.js.
  * No NAS connection needed; run via `npm test`.
  */
-import { normalizeEndpoint } from '../lib/opencli.js'
+import { normalizeEndpoint, unwrapOpenCLIResult } from '../lib/opencli.js'
 import { encodeMessage, decodeMessage } from '../lib/protobuf.js'
 import { Capabilities } from '../lib/capabilities.js'
 import { TOOLS } from '../lib/tools.js'
+import { normalizeAllowedRoots, isPathAllowed } from '../lib/paths.js'
+import { UgreenGateway } from '../lib/gateway.js'
 
 let passed = 0
 let failed = 0
@@ -28,6 +30,14 @@ check('hostname gets plain https', normalizeEndpoint('nas.example.com') === 'htt
 check('trailing slash stripped', normalizeEndpoint('https://nas.example.com/') === 'https://nas.example.com')
 check('protocol-relative host kept', normalizeEndpoint('//nas.example.com') === 'https://nas.example.com')
 check('bad scheme rejected', await throws(() => normalizeEndpoint('htp://nas.example.com'), 'NAS 地址格式不正确'))
+
+// --- OpenCLI result unwrap / directory whitelist ---
+check('unwraps OpenCLI {value,raw,headers}', unwrapOpenCLIResult({ value: { ok: 1 }, raw: Buffer.from([1]) }).ok === 1)
+check('passes through plain values', unwrapOpenCLIResult({ ok: 2 }).ok === 2)
+check('normalizes roots from multiline text', normalizeAllowedRoots('/volume1/a,/volume1/b\n/volume1/c/').join() === '/volume1/a,/volume1/b,/volume1/c')
+check('root prefix boundary respected', isPathAllowed('/volume1/ab', ['/volume1/a']) === false && isPathAllowed('/volume1/a/b', ['/volume1/a']) === true)
+check('empty whitelist allows all', isPathAllowed('/anywhere', []) === true)
+check('relative path rejected by whitelist', isPathAllowed('relative/path', ['/volume1']) === false)
 
 // --- protobuf round-trip ---
 const catalog = {
@@ -103,6 +113,7 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
 {
   const { calls, call } = makeMock()
   await tool('ugreen_app_install').run({ ids: 'com.demo.app' }, call)
+  check('app install uses InstallStream', calls[0].method === 'InstallStream')
   check('single-string ids wrapped', calls[0].request.ids.join() === 'com.demo.app' && calls[0].request.ids.length === 1)
 }
 {
@@ -117,7 +128,8 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
 }
 {
   const { call } = makeMock()
-  check('quota set without quotaGb rejected', await throws(() => tool('ugreen_file_quota').run({ path: '/x', action: 'set' }, call), 'quotaGb'))
+  check('quota set without quotaGb rejected', await throws(() => tool('ugreen_file_quota_set').run({ path: '/x' }, call), 'quotaGb'))
+  check('quota set needs execute permission', tool('ugreen_file_quota_set').permission === 'filemgr_set_quota')
 }
 {
   const { call } = makeMock()
@@ -146,6 +158,15 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
 }
 {
   const { calls, call } = makeMock(({ call: c }) => {
+    if (c.method === 'ReadFile') return { data: Buffer.from('AAAA').toString('base64'), eof: true, bytes_read: 4 }
+    return {}
+  })
+  await tool('ugreen_file_write').run({ path: '/existing', content: 'BBBB', mode: 'append' }, call)
+  const write = calls.find((c) => c.method === 'WriteFile')
+  check('append preserves existing content', Boolean(write) && Buffer.from(write.request.content, 'base64').toString() === 'AAAABBBB')
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => {
     if (c.method === 'ReadFile') { const e = new Error('denied'); e.status = 403; throw e }
     return {}
   })
@@ -163,5 +184,47 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
   check('utf8 text stays printable', out.text === '中文 ok' + String.fromCharCode(10))
 }
 
+{
+  const { call } = makeMock(() => ({ data: Buffer.from('hello').toString('base64'), eof: true, bytes_read: 5 }))
+  const out = JSON.parse(await tool('ugreen_file_read').run({ path: '/f' }, call))
+  check('file read returns decoded content', out.text === 'hello' && out.bytesRead === 5)
+}
+{
+  const { call } = makeMock(() => ({
+    data: { file_list: { top_path: '/volume1', total: 1, files: [{ name: 'a.txt', path: '/volume1/a.txt' }] } },
+  }))
+  const out = JSON.parse(await tool('ugreen_file_list').run({ path: '/volume1' }, call))
+  check('file list returns entries', out.entries.length === 1 && out.topPath === '/volume1')
+}
+{
+  const { call } = makeMock()
+  call.allowedRoots = ['/volume1/work']
+  call.guardPath = (value, label) => { if (!isPathAllowed(value, call.allowedRoots)) throw new Error(label + ' outside whitelist') }
+  check('file read rejects path outside whitelist', await throws(() => tool('ugreen_file_read').run({ path: '/volume1/private/x' }, call), 'outside whitelist'))
+  check('file read allows path inside whitelist', await tool('ugreen_file_read').run({ path: '/volume1/work/x' }, call).then(() => true, () => false))
+}
+
+// --- settings gateway: save and unbind ---
+{
+  let settings = {
+    endpoint: 'https://nas.example.com',
+    accessToken: 'test-token',
+    timeoutMs: 15000,
+    rejectUnauthorized: false,
+    mode: 'full',
+    accessLevel: 'admin',
+    confirmMode: 'ask',
+    allowedRoots: [],
+  }
+  const gateway = Object.create(UgreenGateway.prototype)
+  gateway.owner = {
+    getSettings: () => ({ ...settings, hasToken: () => Boolean(settings.accessToken) }),
+    update: async (patch) => { settings = { ...settings, ...patch } },
+  }
+  const saved = await gateway.save('https://nas.example.com', '', 15000, false, 'full', ['/volume1/work'], 'ask', 'user')
+  check('gateway saves whitelist and role', saved.allowedRoots.join() === '/volume1/work' && saved.accessLevel === 'user' && saved.confirmMode === 'ask')
+  await gateway.unbind()
+  check('gateway unbind clears token and endpoint', settings.accessToken === '' && settings.endpoint === '')
+}
 console.log(`${passed} passed, ${failed} failed`)
 process.exit(failed ? 1 : 0)

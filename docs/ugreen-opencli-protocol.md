@@ -523,12 +523,12 @@ dsh-ugreen-nas/
 
 ### 6.3 工具列表
 
-v0.3.0 注册 59 个工具，覆盖 8 大类 70 项权限：
+v0.4.0 注册 60 个工具，覆盖 8 大类 70 项权限：
 
 | 大类 | 工具数 | 代表工具 |
 |---|---:|---|
 | 连接 | 1 | ugreen_connection_test |
-| 文件 | 16 | ugreen_file_stat / list / read / write / mkdir / rename / move / delete / restore / tag / quota |
+| 文件 | 17 | ugreen_file_stat / list / read / write / mkdir / rename / move / delete / restore / tag / quota / quota_set |
 | 存储 | 2 | ugreen_storage_info / smart |
 | 任务 | 2 | ugreen_task_overview / metrics |
 | 应用 | 7 | ugreen_app_status / list / install / uninstall / update / start / stop |
@@ -541,13 +541,16 @@ v0.3.0 注册 59 个工具，覆盖 8 大类 70 项权限：
 
 ### 6.4 模式与危险操作
 
-v0.3.0 覆盖 8 大类全部 70 项权限对应的能力（59 个工具）：
+v0.4.0 覆盖 8 大类全部 70 项权限对应的能力（60 个工具）：
 
 - mode 设置：full（默认，按令牌权限注册全部工具）/ readonly（仅注册只读工具）
-- 令牌能力探测（lib/capabilities.js）：对 8 个 socket 各探测一次廉价读，未授予的大类对应工具不注册；结果缓存 10 分钟
-- 危险操作（删除、卸载、停机、重建类）在工具描述中带【写/危险操作】标注；逐次确认交给 DSH 的工具审批策略
+- accessLevel：admin（默认，全部工具）/ user（仅文件、下载、全局搜索等非系统类工具）
+- confirmMode：ask（默认，写/删/执行走 DSH `tools/pre-execute` 审批；完全权限档 approval: never 会直接拒绝、不弹窗）/ off（直接执行）
+- allowedRoots：文件目录白名单，文件、搜索、下载保存目录、配额、Compose 项目目录按绝对路径前缀校验
+- 令牌能力探测（lib/capabilities.js）：打开设置页或点「重新探测」时对 8 个 socket 各探测一次廉价读；插件激活本身不发探测请求；结果缓存 10 分钟
+- 写/删/执行工具在描述中带【写/危险操作】标注；默认经 DSH `tools/pre-execute` 审批，完全权限档 approval: never 直接拒绝、不弹窗
 - 403 错误消息带缺失的权限名，提示在 NAS 端重建令牌
-- 服务端流式方法（`CreateTitleStreamTask`、`UninstallStream`、`UpdateStream`）由 WebSocket 流式客户端 `OpenCLIClient.callStream` 处理，见 3.4
+- 服务端流式方法（`CreateTitleStreamTask`、`InstallStream`、`UninstallStream`、`UpdateStream`）由 WebSocket 流式客户端 `OpenCLIClient.callStream` 处理，见 3.4
 - `Filemgr/UploadFile` 的 multipart 分片上传仍未实现；常规写文件走 `WriteFile`
 
 ### 6.5 错误处理

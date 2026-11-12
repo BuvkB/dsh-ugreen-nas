@@ -3,7 +3,8 @@
  * wire codec, capability bookkeeping and the argument guards in tools.js.
  * No NAS connection needed; run via `npm test`.
  */
-import { normalizeEndpoint, unwrapOpenCLIResult } from '../lib/opencli.js'
+import { normalizeEndpoint, detectUgreenlinkId, resolveEndpoint, OpenCLIClient, unwrapOpenCLIResult } from '../lib/opencli.js'
+import http from 'node:http'
 import { encodeMessage, decodeMessage } from '../lib/protobuf.js'
 import { Capabilities } from '../lib/capabilities.js'
 import { TOOLS } from '../lib/tools.js'
@@ -36,6 +37,7 @@ console.log('dsh-ugreen-nas unit tests')
 const clientSource = readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8')
 check('settings page fills host content width', clientSource.includes('.ugn-page { width: 100%; box-sizing: border-box; margin: 0; padding: 12px 0 28px;'))
 check('settings page no longer caps at 720px', !clientSource.includes('max-width: 720px'))
+check('capability grid uses four columns', clientSource.includes('.ugn-caps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));'))
 
 // --- normalizeEndpoint ---
 check('bare IP gets :9443', normalizeEndpoint('192.168.1.10') === 'https://192.168.1.10:9443')
@@ -44,6 +46,63 @@ check('hostname gets plain https', normalizeEndpoint('nas.example.com') === 'htt
 check('trailing slash stripped', normalizeEndpoint('https://nas.example.com/') === 'https://nas.example.com')
 check('protocol-relative host kept', normalizeEndpoint('//nas.example.com') === 'https://nas.example.com')
 check('bad scheme rejected', await throws(() => normalizeEndpoint('htp://nas.example.com'), 'NAS 地址格式不正确'))
+check('ug.link short link keeps path', normalizeEndpoint('ug.link/mynas123') === 'https://ug.link/mynas123')
+check('UGREENlink web URL collapses to root', normalizeEndpoint('https://mynas123.cn23.ug.link/desktop/?os=ugospro') === 'https://mynas123.cn23.ug.link')
+check('DDNS web URL collapses to root', normalizeEndpoint('nas.example.com/desktop/?os=ugospro') === 'https://nas.example.com')
+check('https IP gets default 9443', normalizeEndpoint('https://192.168.1.10') === 'https://192.168.1.10:9443')
+check('explicit https IP port wins', normalizeEndpoint('https://192.168.1.10:443') === 'https://192.168.1.10')
+check('bare IPv6 gets default 9443', normalizeEndpoint('[fd00::1]') === 'https://[fd00::1]:9443')
+
+// --- UGREENlink ID detection / resolution ---
+check('bare UGREENlink ID detected', detectUgreenlinkId('mynas123')?.alias === 'mynas123' && detectUgreenlinkId('mynas123')?.kind === 'bare')
+check('short link ID detected', detectUgreenlinkId('https://ug.link/mynas123')?.alias === 'mynas123' && detectUgreenlinkId('https://ug.link/mynas123')?.kind === 'short')
+check('short link with desktop suffix detected', detectUgreenlinkId('https://ug.link/mynas123/desktop')?.alias === 'mynas123')
+check('regional UGREENlink host is not an ID', detectUgreenlinkId('https://mynas123.cn23.ug.link') === null)
+check('localhost is not a UGREENlink ID', detectUgreenlinkId('localhost') === null)
+check('DDNS host is not a UGREENlink ID', detectUgreenlinkId('nas.example.com') === null)
+{
+  const missingLookup = async () => { throw Object.assign(new Error('ENOTFOUND'), { code: 'ENOTFOUND' }) }
+  const okFetch = async () => ({ ok: true, status: 200, json: async () => ({ code: 200, data: { alias: 'mynas123', relayDomain: 'cn23.ug.link' } }) })
+  check('resolves bare ID through UGREENlink API', await resolveEndpoint('mynas123', { fetchImpl: okFetch, lookupImpl: missingLookup }) === 'https://mynas123.cn23.ug.link')
+  check('resolves official short link', await resolveEndpoint('https://ug.link/mynas123', { fetchImpl: okFetch, lookupImpl: missingLookup }) === 'https://mynas123.cn23.ug.link')
+  let fetched = 0
+  const countingFetch = async () => { fetched++; return okFetch() }
+  check('direct UGREENlink host bypasses lookup', await resolveEndpoint('https://mynas123.cn23.ug.link', { fetchImpl: countingFetch }) === 'https://mynas123.cn23.ug.link' && fetched === 0)
+  check('local hostname bypasses UGREENlink lookup', await resolveEndpoint('nas', { fetchImpl: countingFetch, lookupImpl: async () => ({ address: '192.168.1.10', family: 4 }) }) === 'https://nas' && fetched === 0)
+  const missingFetch = async () => ({ ok: true, status: 200, json: async () => ({ code: 7022, msg: 'UGREENlink ID不存在' }) })
+  check('unknown UGREENlink ID fails clearly', await throws(() => resolveEndpoint('no-such-id', { fetchImpl: missingFetch, lookupImpl: missingLookup }), 'UGREENlink ID 不存在'))
+}
+
+// --- HTTP redirect following ---
+{
+  const seen = []
+  const targetServer = http.createServer((req, res) => {
+    const chunks = []
+    req.on('data', (chunk) => chunks.push(chunk))
+    req.on('end', () => {
+      seen.push({ method: req.method, auth: req.headers.authorization, body: Buffer.concat(chunks).toString() })
+      res.writeHead(200, { 'Content-Type': 'text/plain' })
+      res.end('redirect-ok')
+    })
+  })
+  await new Promise((resolve) => targetServer.listen(0, '127.0.0.1', resolve))
+  const targetPort = targetServer.address().port
+  const redirectServer = http.createServer((req, res) => {
+    res.writeHead(302, { Location: 'http://127.0.0.1:' + targetPort + '/final' })
+    res.end()
+  })
+  await new Promise((resolve) => redirectServer.listen(0, '127.0.0.1', resolve))
+  const redirectPort = redirectServer.address().port
+  const client = new OpenCLIClient({ endpoint: 'http://127.0.0.1:' + redirectPort, token: 'secret', timeoutMs: 3000 })
+  const response = await client.request(new URL('http://127.0.0.1:' + redirectPort + '/start'), {
+    Authorization: 'Bearer secret', 'Content-Type': 'text/plain', 'Content-Length': '4',
+  }, Buffer.from('ping'))
+  check('follows HTTP redirect', response.statusCode === 200 && response.body.toString() === 'redirect-ok')
+  check('redirect keeps POST body', seen[0]?.method === 'POST' && seen[0]?.body === 'ping')
+  check('cross-host redirect drops Authorization', seen[0]?.auth === undefined)
+  await new Promise((resolve) => redirectServer.close(resolve))
+  await new Promise((resolve) => targetServer.close(resolve))
+}
 
 // --- OpenCLI result unwrap / directory whitelist ---
 check('unwraps OpenCLI {value,raw,headers}', unwrapOpenCLIResult({ value: { ok: 1 }, raw: Buffer.from([1]) }).ok === 1)

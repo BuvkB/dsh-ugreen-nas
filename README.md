@@ -2,7 +2,7 @@
 
 [English](#english) | 中文
 
-DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，把文件、Docker、下载、应用与系统状态变成对话工具。无需 NAS 账号密码，不走 SSH。
+DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，让模型直接管理文件、Docker、下载和应用，并查看系统状态。无需 NAS 账号密码，不走 SSH。
 
 ## 主要能力
 
@@ -28,7 +28,7 @@ DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，把文�
 
 | 配置 | 默认 | 说明 |
 |---|---|---|
-| `endpoint` | — | NAS 地址；裸 IP 自动补 `https://:9443`，支持 UGREENlink / DDNS |
+| `endpoint` | — | NAS 地址；裸 IP 自动补 `https://:9443`，UGREENlink ID / `https://ug.link/<id>` 自动解析为设备域名，也支持 DDNS / 完整 URL |
 | `accessToken` | — | 访问令牌，仅存本机设置，不回显 |
 | `mode` | `full` | `full` 注册全部工具；`readonly` 仅注册只读工具 |
 | `accessLevel` | `admin` | `admin` 全部工具；`user` 仅文件、下载、全局搜索等非系统类工具 |
@@ -63,7 +63,7 @@ Install:
 dsh plugin --profile web add dsh-ugreen-nas
 ```
 
-Then open **Settings → Plugins → UGREEN NAS**, enter the NAS address and access token, and click **Test connection**.
+Then open **Settings → Plugins → UGREEN NAS**, enter the NAS address and access token, and click **Test connection**. The address accepts an IP, a UGREENlink ID or `https://ug.link/<id>` short link (resolved automatically), DDNS, or a full URL.
 
 See [docs/ugreen-opencli-protocol.md](docs/ugreen-opencli-protocol.md) for the protocol, permission model and full 70-permission table.
 

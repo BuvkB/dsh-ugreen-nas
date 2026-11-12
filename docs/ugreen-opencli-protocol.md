@@ -508,18 +508,22 @@ dsh-ugreen-nas/
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| endpoint | string | NAS 地址：IP、UGREENlink ID、DDNS 或完整 URL |
+| endpoint | string | NAS 地址：IP、UGREENlink ID / 官方短链、DDNS 或完整 URL |
 | accessToken | secret | 访问令牌；只保存在本机 settings，不回显给模型 |
 | timeoutMs | natural | 请求超时，默认 15000ms |
 | rejectUnauthorized | boolean | 自签证书保持 false |
 | mode | full / readonly | full 注册全部工具，readonly 只注册只读工具 |
 
-地址归一化规则（normalizeEndpoint）：
+地址归一化规则（normalizeEndpoint / resolveEndpoint）：
 
-- 192.168.1.10 → https://192.168.1.10:9443
-- curi.cn27.ug.link → https://curi.cn27.ug.link
-- 已带 http:// / https:// 的值原样使用
-- 末尾斜杠会去掉
+- `192.168.1.10` → `https://192.168.1.10:9443`（裸 IPv4/IPv6 默认补 9443，显式端口保留）
+- `myNAS123` → 调用 `https://api.ugnas.com/api/p2p/v2/ta/nodeInfo/byAlias` 解析 `relayDomain` → `https://mynas123.cn23.ug.link`
+- `https://ug.link/myNAS123` / `www.ug.link/myNAS123` → 同样解析为 `https://mynas123.cn23.ug.link`
+- `mynas123.cn23.ug.link` → `https://mynas123.cn23.ug.link`
+- `nas.example.com/desktop/?os=ugospro` → `https://nas.example.com`（去掉 UGOS 网页端 `/desktop` 与查询参数）
+- 已带 `http://` / `https://` 的完整 URL 保留；末尾斜杠去掉
+- 裸单标签值先查本地 DNS，能解析则按 LAN 主机名使用；否则按 UGREENlink ID 解析，查不到会明确报「UGREENlink ID 不存在」
+- HTTP 请求最多跟随 5 次 301/302/303/307/308 重定向；跨主机/端口重定向不转发 Authorization。WebSocket 不跟随 HTTP 重定向，UGREENlink ID 会先解析成直连域名
 
 ### 6.3 工具列表
 

@@ -70,7 +70,7 @@ check('DDNS host is not a UGREENlink ID', detectUgreenlinkId('nas.example.com') 
   check('direct UGREENlink host bypasses lookup', await resolveEndpoint('https://mynas123.cn23.ug.link', { fetchImpl: countingFetch }) === 'https://mynas123.cn23.ug.link' && fetched === 0)
   check('local hostname bypasses UGREENlink lookup', await resolveEndpoint('nas', { fetchImpl: countingFetch, lookupImpl: async () => ({ address: '192.168.1.10', family: 4 }) }) === 'https://nas' && fetched === 0)
   const missingFetch = async () => ({ ok: true, status: 200, json: async () => ({ code: 7022, msg: 'UGREENlink ID不存在' }) })
-  check('unknown UGREENlink ID fails clearly', await throws(() => resolveEndpoint('no-such-id', { fetchImpl: missingFetch, lookupImpl: missingLookup }), 'UGREENlink ID 不存在'))
+  check('unknown UGREENlink ID fails clearly', await throws(() => resolveEndpoint('no-such-id', { fetchImpl: missingFetch, lookupImpl: missingLookup }), '既不是可解析的局域网主机'))
 }
 
 // --- HTTP redirect following ---
@@ -100,6 +100,8 @@ check('DDNS host is not a UGREENlink ID', detectUgreenlinkId('nas.example.com') 
   check('follows HTTP redirect', response.statusCode === 200 && response.body.toString() === 'redirect-ok')
   check('redirect keeps POST body', seen[0]?.method === 'POST' && seen[0]?.body === 'ping')
   check('cross-host redirect drops Authorization', seen[0]?.auth === undefined)
+  client.httpAgent.destroy()
+  client.httpsAgent.destroy()
   await new Promise((resolve) => redirectServer.close(resolve))
   await new Promise((resolve) => targetServer.close(resolve))
 }
@@ -300,6 +302,78 @@ if (UgreenGateway) {
   check('gateway unbind clears token and endpoint', settings.accessToken === '' && settings.endpoint === '')
 } else {
   console.log('  (dsh-typert-protocol unavailable; gateway test skipped)')
+}
+// --- 0.4.3 regression coverage ---
+{
+  const { call } = makeMock()
+  check('task metrics unknown metric rejected', await throws(() => tool('ugreen_task_metrics').run({ metric: 'nope' }, call), '未知指标'))
+}
+{
+  const { call } = makeMock()
+  call.allowedRoots = ['/volume1/work']
+  call.guardPath = (value, label) => { if (!isPathAllowed(value, call.allowedRoots)) throw new Error(label + ' outside whitelist') }
+  check('rename rejects newName escaping whitelist', await throws(() => tool('ugreen_file_rename').run({ dir: '/volume1/work', oldName: 'a.txt', newName: '../../secret/b' }, call), 'outside whitelist'))
+  check('rename allows newName inside whitelist', await tool('ugreen_file_rename').run({ dir: '/volume1/work', oldName: 'a.txt', newName: 'b.txt' }, call).then(() => true, () => false))
+}
+{
+  const loose = {
+    enums: {},
+    messages: {
+      'demo.Brief': { fields: [
+        { name: 'id', number: 1, type: 'STRING' },
+        { name: 'names', number: 2, type: 'MESSAGE', typeName: '.demo.Brief.NameI18nMapEntry', repeated: true },
+      ] },
+      // Registered WITHOUT the mapEntry flag, like appinfo.AppBrief.NameI18nMapEntry in the shipped catalog.
+      'demo.Brief.NameI18nMapEntry': { fields: [
+        { name: 'key', number: 1, type: 'STRING' },
+        { name: 'value', number: 2, type: 'STRING' },
+      ] },
+    },
+  }
+  const wire = encodeMessage(loose, 'demo.Brief', { id: 'x', names: { 'zh-CN': '名' } })
+  const round = decodeMessage(loose, 'demo.Brief', wire)
+  check('flagless map encodes as key/value entries', round.names?.[0]?.key === 'zh-CN' && round.names?.[0]?.value === '名')
+  check('encodeMessage throws on unknown type', await throws(() => encodeMessage(loose, 'demo.Missing', {}), 'unknown message type'))
+}
+{
+  let probes = 0
+  const caps = new Capabilities({
+    configured: () => true,
+    probe: async () => { probes++; const e = new Error('down'); e.code = 'network'; throw e },
+  })
+  const snap = await caps.refresh()
+  check('all-network-failure reports auth unknown', snap.auth === 'unknown' && Object.values(snap.groups).every((s) => s === 'unknown'))
+  const before = probes
+  await caps.refresh()
+  check('unknown auth is not fresh and re-probes', probes === before * 2)
+}
+{
+  const { WebSocketServer } = await import('ws')
+  const streamCatalog = {
+    enums: {},
+    messages: {
+      'demo.Item': { fields: [{ name: 'name', number: 1, type: 'STRING' }] },
+      'demo.StreamReq': { fields: [] },
+    },
+    services: { 'demo.Stream': { name: 'demo.Stream', methods: { Pull: { name: 'Pull', input: '.demo.StreamReq', output: '.demo.Item' } } } },
+  }
+  const frame = (type, payload) => Buffer.concat([Buffer.from([type]), payload])
+  const server = new WebSocketServer({ port: 0 })
+  await new Promise((resolve) => server.on('listening', resolve))
+  const port = server.address().port
+  let mode = 'status'
+  server.on('connection', (sock) => {
+    sock.on('message', () => {})
+    sock.send(frame(0x01, encodeMessage(streamCatalog, 'demo.Item', { name: 'a' })))
+    if (mode === 'status') sock.send(frame(0x13, Buffer.alloc(0)))
+    else sock.close(1000)
+  })
+  const streamClient = new OpenCLIClient({ endpoint: `http://127.0.0.1:${port}`, token: 't', timeoutMs: 3000 })
+  const ok = await streamClient.callStream({ socketId: 's', service: 'demo.Stream', method: 'Pull', request: {}, catalog: streamCatalog })
+  check('stream with STATUS frame resolves', ok.length === 1 && ok[0].name === 'a')
+  mode = 'drop'
+  check('clean close without STATUS fails closed', await throws(() => streamClient.callStream({ socketId: 's', service: 'demo.Stream', method: 'Pull', request: {}, catalog: streamCatalog }), '未收到 STATUS'))
+  await new Promise((resolve) => server.close(resolve))
 }
 console.log(`${passed} passed, ${failed} failed`)
 process.exit(failed ? 1 : 0)

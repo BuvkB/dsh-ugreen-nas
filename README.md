@@ -45,7 +45,7 @@ DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，让模�
 
 ## 开发与文档
 
-- 开发：`npm install && bash scripts/build.sh`；回归：`npm test`（smoke + unit）。
+- 开发：`npm install && bash scripts/build.sh`；回归：`npm test`（自动重链 DSH peer + smoke + unit）。
 - 协议、权限模型与完整 70 项权限明细：[docs/ugreen-opencli-protocol.md](docs/ugreen-opencli-protocol.md)
 
 ## English

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.3
+
+- 修复：`ugreen_file_rename` 的 newName 未过目录白名单，`../` 可把文件改名到白名单外，现在与源路径一并校验。
+- 修复：流式调用对端干净关闭但未收到 STATUS 帧时，不再把部分结果当完整结果，改为明确报错。
+- 修复：能力探测全部网络失败时不再误报「已连接」，authState 标记 unknown 并允许重试探测。
+- 修复：protobuf 编码不依赖 catalog 的 mapEntry 标志，repeated MESSAGE 收到普通对象一律按 map 编码；未知消息类型直接报错，不再静默发空请求。
+- 修复：设置页「测试连接」改测表单当前值（地址/令牌/超时/证书校验），未保存的新令牌也能验证。
+- 优化：OpenCLI HTTP 请求启用 keep-alive 连接复用，聚合类工具不再重复 TCP/TLS 握手。
+- 优化：裸主机名不在本地 DNS 且非有效 UGREENlink ID 时，报错说明两种情况并提示改填 IP。
+- 优化：`ugreen_task_metrics` 无效 metric 直接报错；文件写入描述注明 append 非原子、避免并发追加。
+- 优化：`npm test` 前置自动重链 DSH peer（新增 scripts/link-peers.mjs，build.sh 复用），peer 断链不再导致测试失败。
+
 ## 0.4.2
 
 - 新增：NAS 地址支持 UGREENlink ID 与 `https://ug.link/<id>` 短链自动解析为设备域名；保存设置时回填完整地址。

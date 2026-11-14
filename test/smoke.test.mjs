@@ -4,7 +4,19 @@
  * UGREEN_TOKEN (or /tmp/.nas_opencli_token) is available.
  */
 import { readFileSync, existsSync } from 'node:fs'
-import { name, inject, Config, apply } from '../lib/index.js'
+// index.js imports the optional DSH peers. Degrade like unit.test does for the
+// gateway when they are not linked (bare checkout) instead of failing the run.
+let entry = null
+try {
+  entry = await import('../lib/index.js')
+} catch (error) {
+  if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error
+}
+if (!entry) {
+  console.log('  (DSH peers not linked; run `npm run build` first — smoke skipped)')
+  process.exit(0)
+}
+const { name, inject, Config, apply } = entry
 
 let passed = 0
 let failed = 0

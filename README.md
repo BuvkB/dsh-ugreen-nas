@@ -14,7 +14,7 @@ DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，让模�
 
 ## 安装
 
-1. 在 NAS「控制面板 → 账号 → 访问令牌」创建令牌，按需勾选权限。
+1. 创建访问令牌：打开手机「绿联云」App → 个人中心 → 本地账号 → 访问令牌 → 创建（网页控制面板没有这个入口）。令牌只在创建时完整显示一次，请立即保存；权限按需勾选。
 2. 安装插件：
 
    ```bash
@@ -62,6 +62,8 @@ Install:
 ```bash
 dsh plugin --profile web add dsh-ugreen-nas
 ```
+
+Create the access token in the UGREEN mobile app (绿联云): **Profile → Local Account → Access Token → Create** — the NAS web control panel has no token entry, and the full token is shown only once at creation.
 
 Then open **Settings → Plugins → UGREEN NAS**, enter the NAS address and access token, and click **Test connection**. The address accepts an IP, a UGREENlink ID or `https://ug.link/<id>` short link (resolved automatically), DDNS, or a full URL.
 

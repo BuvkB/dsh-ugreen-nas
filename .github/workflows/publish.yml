@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -29,3 +29,29 @@ jobs:
         run: node test/unit.test.mjs
       - name: Publish (OIDC, tokenless)
         run: npm publish
+      - name: Pack release tarball
+        run: |
+          npm pack
+          cp dsh-ugreen-nas-*.tgz dsh-ugreen-nas.tgz
+          sha256sum dsh-ugreen-nas-*.tgz dsh-ugreen-nas.tgz > checksums.txt
+      - name: Extract this version's changelog section
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const version = require("./package.json").version;
+            const text = fs.readFileSync("CHANGELOG.md", "utf8").split(/\r?\n/);
+            const start = text.findIndex((line) => line.trim() === "## " + version);
+            if (start < 0) { console.error("no CHANGELOG section for " + version); process.exit(1); }
+            let end = text.length;
+            for (let i = start + 1; i < text.length; i++) if (/^## /.test(text[i])) { end = i; break; }
+            fs.writeFileSync("RELEASE_NOTES.md", text.slice(start + 1, end).join("\n").trim() + "\n");
+          '
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dsh-ugreen-nas-*.tgz dsh-ugreen-nas.tgz checksums.txt --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md dsh-ugreen-nas-*.tgz dsh-ugreen-nas.tgz checksums.txt
+          fi

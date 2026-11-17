@@ -1,6 +1,6 @@
 # 绿联 NAS 访问令牌 / OpenCLI 协议与 DSH 插件接入文档
 
-> 文档状态：v0.2.3，基于 UGOS Pro 1.21.0.80330（构建 2026-10-23）实测整理
+> 文档状态：v0.2.3，基于 UGOS 1.21.0.80330（构建 2026-10-23）实测整理
 > 适用插件：dsh-ugreen-nas
 > 说明：本文档只描述只读接口和协议逆向过程。没有在 NAS 上创建、修改或删除任何配置。
 
@@ -40,7 +40,7 @@ ugpoa_v1.<32 位 token_id>.<secret>
 
 > 绿联云客户端 → 个人中心 → 本地账号 → 访问与授权 → 访问令牌 → 创建访问令牌
 
-UGOS Pro 网页控制面板没有访问令牌入口（常见误区：在控制面板里怎么都找不到）。「访问令牌」位于本地账号页的「访问与授权」分组下，描述为"为第三方应用（如 AI Agent）授予指定能力"。
+UGOS 网页控制面板没有访问令牌入口（常见误区：在控制面板里怎么都找不到）。「访问令牌」位于本地账号页的「访问与授权」分组下，描述为"为第三方应用（如 AI Agent）授予指定能力"。
 
 创建页可选：
 
@@ -309,7 +309,7 @@ grpcurl -plaintext -unix /var/ugreen/filemgr_serv.sock -proto-out-dir ./proto \
 
 实测结论：
 
-- 当前 UGOS Pro 1.21.0.80330 的 app 二进制中没有找到 reflection.Register 符号
+- 当前 UGOS 1.21.0.80330 的 app 二进制中没有找到 reflection.Register 符号
 - 因此 reflection 很可能没有启用；即使未来启用，也只能在拿到 app 的 unix socket 后使用，不能直接通过 OpenCLI 公共 HTTP 接口调用 reflection
 - 如果后续版本启用，这是最干净的方式：不需要逆向二进制，直接得到官方 FileDescriptorProto
 
@@ -712,7 +712,7 @@ service download.DownloadService
 
 ## 10. 验证记录（本次实测）
 
-- UGOS Pro 版本：1.21.0.80330，构建 2026-10-23
+- UGOS 版本：1.21.0.80330，构建 2026-10-23
 - app_serv 版本：1.21.0.0111
 - account-setting 版本：1.4.1.2128
 - 访问令牌：dsh，70 项权限，永不过期，600 次/分钟，10 并发

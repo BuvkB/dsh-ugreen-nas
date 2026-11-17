@@ -2,7 +2,7 @@
 
 [English](#english) | 中文
 
-DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，让模型直接管理文件、Docker、下载和应用，并查看系统状态。无需 NAS 账号密码，不走 SSH。
+DeepSeek Harness 插件：通过 UGOS 访问令牌连接绿联 NAS，让模型直接管理文件、Docker、下载和应用，并查看系统状态。无需 NAS 账号密码，不走 SSH。
 
 ## 主要能力
 
@@ -50,7 +50,7 @@ DeepSeek Harness 插件：通过 UGOS Pro 访问令牌连接绿联 NAS，让模�
 
 ## English
 
-A DSH plugin for UGREEN NAS. It connects through a UGOS Pro access token and exposes file, Docker, download, app, storage, task and control-panel operations as model tools—no NAS account password and no SSH.
+A DSH plugin for UGREEN NAS. It connects through a UGOS access token and exposes file, Docker, download, app, storage, task and control-panel operations as model tools—no NAS account password and no SSH.
 
 - **60 tools across 8 groups / 70 token permissions**: files, Docker/Compose, downloads, App Center, storage, task monitoring, control panel and global search.
 - **Token-scoped by design**: only permission groups granted to the token are registered.

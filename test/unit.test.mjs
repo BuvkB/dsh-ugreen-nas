@@ -168,6 +168,8 @@ check('int64 beyond safe range stays string', round.big === '9007199254740993')
   await caps.refresh({ force: true })
   check('forced refresh re-probes', probes === before * 2)
   check('isReady denies denied group', caps.isReady('storage') === false && caps.isReady('app') === true)
+  check('isReady keeps tool with different permission visible', caps.isReady('storage', { permission: 'storage.pool.list' }) === true)
+  check('isReady still hides tool matching probe permission', caps.isReady('storage', { permission: 'storage.disk.list' }) === false)
 }
 
 // --- tools argument handling ---
@@ -207,8 +209,93 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
   check('quota set needs execute permission', tool('ugreen_file_quota_set').permission === 'filemgr_set_quota')
 }
 {
+  check('task metrics declares all metric permissions', tool('ugreen_task_metrics').permissions?.length === 8)
+  check('docker check declares all three check permissions', tool('ugreen_docker_check').permissions?.length === 3)
+  check('storage info declares pool/volume permissions', tool('ugreen_storage_info').permissions?.includes('storage.pool.list') && tool('ugreen_storage_info').permissions?.includes('storage.volume.list'))
+  check('tag link declares add/delete tag permissions', tool('ugreen_file_tag_link').permissions?.includes('filemgr_delete_tag'))
+}
+{
   const { call } = makeMock()
   check('chtimes without timestamps rejected', await throws(() => tool('ugreen_file_chtimes').run({ path: '/x' }, call), 'atime'))
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => {
+    if (c.method === 'Stat') return { stat: { atime: 111, mtime: 222 } }
+    return {}
+  })
+  await tool('ugreen_file_chtimes').run({ path: '/x', mtime: 1700000000 }, call)
+  const write = calls.find((c) => c.method === 'Chtimes')
+  check('chtimes mtime-only fills atime from Stat', calls[0]?.method === 'Stat'
+    && write?.request.atime === 111 && write?.request.mtime === 1700000000)
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => {
+    if (c.method === 'Stat') return { stat: { atime: 111, mtime: 222 } }
+    return {}
+  })
+  await tool('ugreen_file_chtimes').run({ path: '/x', atime: 1700000000 }, call)
+  const write = calls.find((c) => c.method === 'Chtimes')
+  check('chtimes atime-only fills mtime from Stat', write?.request.atime === 1700000000 && write?.request.mtime === 222)
+}
+{
+  const { call } = makeMock(({ call: c }) => {
+    if (c.method === 'Stat') { const error = new Error('denied'); error.status = 403; throw error }
+    return {}
+  })
+  const message = await tool('ugreen_file_chtimes').run({ path: '/x', mtime: 1700000000 }, call).then(() => '', (error) => error.message)
+  check('chtimes partial needs Stat permission or both timestamps', message.includes('filemgr_list_and_attr'))
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => c.method === 'GetOsIdentity' ? { system_version: '1.2', model: 'DXP' } : {})
+  const out = JSON.parse(await tool('ugreen_system_info').run({}, call))
+  check('system info avoids unavailable device methods', !calls.some((c) => c.method === 'GetDeviceBasicInfo' || c.method === 'GetSystemInformation'))
+  check('system info returns identity', out.identity?.model === 'DXP')
+}
+{
+  const { call } = makeMock(() => ({ value: '[{"name":"sda","status":"GOOD"}]' }))
+  const out = JSON.parse(await tool('ugreen_storage_smart').run({}, call))
+  check('storage smart parses JSON payload', Array.isArray(out) && out[0].name === 'sda')
+}
+{
+  const { call } = makeMock(() => ({ result: [{ image_name: 'nginx' }] }))
+  const out = JSON.parse(await tool('ugreen_docker_image_list').run({}, call))
+  check('docker image list unwraps result array', Array.isArray(out) && out[0].image_name === 'nginx')
+}
+{
+  const { calls, call } = makeMock()
+  await tool('ugreen_file_mkdir').run({ path: '/x' }, call)
+  check('mkdir defaults to non-recursive', calls[0]?.request.make_all === false)
+  await tool('ugreen_file_mkdir').run({ path: '/x', makeAll: true }, call)
+  check('mkdir explicit makeAll=true', calls[1]?.request.make_all === true)
+}
+{
+  const { calls, call } = makeMock()
+  await tool('ugreen_file_share_mkdir').run({ volume: 'volume1', name: 'demo' }, call)
+  check('share mkdir defaults recycle off', calls[0]?.request.enable_recycle === false)
+  await tool('ugreen_file_share_mkdir').run({ volume: 'volume1', name: 'demo', enableRecycle: true }, call)
+  check('share mkdir explicit recycle on', calls[1]?.request.enable_recycle === true)
+}
+{
+  const { calls, call } = makeMock()
+  await tool('ugreen_file_tag_list').run({}, call)
+  check('tag list defaults uid 1000', calls[0]?.method === 'getUserTag' && calls[0].request.value === 1000)
+  await tool('ugreen_file_tag_list').run({ uid: 1006 }, call)
+  check('tag list accepts explicit uid', calls[1]?.request.value === 1006)
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => c.method === 'GetIfaceList' ? { ifaces: [{ interface: 'eth0' }] } : { general: {} })
+  const out = JSON.parse(await tool('ugreen_network_info').run({}, call))
+  const ifaceCall = calls.find((c) => c.method === 'GetIfaceList')
+  check('network info requests all interfaces', ifaceCall?.request.value === 'all')
+  check('network info unwraps ifaces', Array.isArray(out.ifaces) && out.ifaces[0].interface === 'eth0')
+}
+{
+  const { call } = makeMock(({ call: c }) => {
+    if (c.method === 'PoolList' || c.method === 'VolumeList') throw new Error('denied')
+    return { list: [{ name: 'sda' }] }
+  })
+  const out = JSON.parse(await tool('ugreen_storage_info').run({}, call))
+  check('storage info degrades when pool/volume denied', out.disks.length === 1 && out.pools === undefined && out.volumes === undefined)
 }
 {
   const { call } = makeMock()
@@ -225,11 +312,89 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
 {
   const { calls, call } = makeMock(({ call: c }) => {
     if (c.method === 'ReadFile') { const e = new Error('not found'); e.status = 404; throw e }
+    if (c.method === 'CreateFile') return { stat: { size: 2 } }
     return {}
   })
   await tool('ugreen_file_write').run({ path: '/new', content: 'hi', mode: 'append' }, call)
+  const created = calls.find((c) => c.method === 'CreateFile')
+  check('append to missing file creates via CreateFile', Boolean(created)
+    && created.request.path === '/new'
+    && Buffer.from(created.request.content, 'base64').toString() === 'hi'
+    && created.request.exclusive === true)
+  check('append to missing file never calls WriteFile', !calls.some((c) => c.method === 'WriteFile'))
+}
+{
+  // append 竞态：ReadFile 判定不存在后目标被别处创建，必须重读并拼接，不能覆盖。
+  const { calls, call } = makeMock(({ call: c, index }) => {
+    if (index === 1 && c.method === 'ReadFile') { const e = new Error('not found'); e.status = 404; throw e }
+    if (index === 2 && c.method === 'CreateFile') { const e = new Error('Err - code: 1327, message: A folder with the same name exists'); e.status = 409; throw e }
+    if (c.method === 'ReadFile') return { data: Buffer.from('OLD').toString('base64'), eof: true, bytes_read: 3 }
+    if (c.method === 'WriteFile') return { bytes_written: 6 }
+    return {}
+  })
+  const out = JSON.parse(await tool('ugreen_file_write').run({ path: '/append-race', content: 'NEW', mode: 'append' }, call))
   const write = calls.find((c) => c.method === 'WriteFile')
-  check('append to missing file writes fresh content', Boolean(write) && write.request.total_size === 2)
+  check('append race re-reads and appends', calls.map((c) => c.method).join() === 'ReadFile,CreateFile,ReadFile,WriteFile')
+  check('append race preserves external content', Boolean(write) && Buffer.from(write.request.content, 'base64').toString() === 'OLDNEW' && out.created === false)
+}
+// --- 0.4.5: ugreen_file_write 新建文件走 CreateFile（Issue #3）---
+{
+  const { calls, call } = makeMock(({ call: c }) => {
+    if (c.method === 'WriteFile') {
+      const error = new Error('Err - code: 1302, message: Path does not exist')
+      error.status = 404
+      throw error
+    }
+    return { stat: { size: 2 } }
+  })
+  const out = JSON.parse(await tool('ugreen_file_write').run({ path: '/new', content: 'hi' }, call))
+  check('new file retries via CreateFile after 1302', calls.map((c) => c.method).join() === 'WriteFile,CreateFile')
+  check('CreateFile is exclusive and carries content', calls[1]?.request.exclusive === true
+    && Buffer.from(calls[1]?.request.content || '', 'base64').toString() === 'hi')
+  check('new file result reports created=true', out.created === true && out.bytes === 2 && out.bytesWritten === 2)
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => (c.method === 'WriteFile' ? { bytes_written: 2, stat: { size: 2 } } : {}))
+  const out = JSON.parse(await tool('ugreen_file_write').run({ path: '/existing', content: 'hi' }, call))
+  check('existing file stays on WriteFile only', calls.map((c) => c.method).join() === 'WriteFile' && out.created === false)
+}
+{
+  const { calls, call } = makeMock(({ call: c, index }) => {
+    if (index === 1 && c.method === 'WriteFile') {
+      const error = new Error('Err - code: 1302, message: Path does not exist')
+      error.status = 404
+      throw error
+    }
+    if (c.method === 'CreateFile') {
+      const error = new Error('Err - code: 1327, message: A folder with the same name exists')
+      error.status = 409
+      throw error
+    }
+    return { bytes_written: 2 }
+  })
+  const out = JSON.parse(await tool('ugreen_file_write').run({ path: '/race', content: 'hi' }, call))
+  check('CreateFile race falls back to WriteFile', calls.map((c) => c.method).join() === 'WriteFile,CreateFile,WriteFile')
+  check('race fallback reports created=false', out.created === false)
+}
+{
+  const { calls, call } = makeMock(({ call: c }) => {
+    if (c.method === 'WriteFile') { const error = new Error('method not found'); error.status = 404; throw error }
+    return {}
+  })
+  const surfaced = await tool('ugreen_file_write').run({ path: '/x', content: 'y' }, call).then(() => false, () => true)
+  check('unrelated 404 never creates a duplicate file', surfaced && !calls.some((c) => c.method === 'CreateFile'))
+}
+// --- 0.4.5: ugreen_file_move copy/type 方向修复（Issue #4）---
+{
+  const { calls, call } = makeMock()
+  await tool('ugreen_file_move').run({ src: '/a', dstDir: '/b' }, call)
+  check('move default maps to type=true (MOVE)', calls[0]?.request.type === true)
+}
+{
+  const { calls, call } = makeMock()
+  await tool('ugreen_file_move').run({ src: '/a', dstDir: '/b', copy: true, overwrite: true }, call)
+  check('copy=true maps to type=false (COPY)', calls[0]?.request.type === false)
+  check('overwrite still maps to cover=true', calls[0]?.request.cover === true)
 }
 {
   const { calls, call } = makeMock(({ call: c }) => {
@@ -252,6 +417,12 @@ const tool = (name) => TOOLS.find((t) => t.name === name)
   const { call } = makeMock(() => ({ data: Buffer.from('ok' + String.fromCharCode(0) + 'bad').toString('base64'), eof: true, bytes_read: 7 }))
   const out = JSON.parse(await tool('ugreen_file_read').run({ path: '/f' }, call))
   check('nul byte forces base64 branch', Boolean(out.base64) && out.text === undefined)
+}
+{
+  const binary = Buffer.from([0xAB, 0xAB, 0xCD, 0xEF])
+  const { call } = makeMock(() => ({ data: binary.toString('base64'), eof: true, bytes_read: binary.length }))
+  const out = JSON.parse(await tool('ugreen_file_read').run({ path: '/bin' }, call))
+  check('invalid UTF-8 binary stays base64', out.base64 === binary.toString('base64') && out.text === undefined)
 }
 {
   const { call } = makeMock(() => ({ data: Buffer.from('中文 ok' + String.fromCharCode(10)).toString('base64'), eof: true, bytes_read: 10 }))

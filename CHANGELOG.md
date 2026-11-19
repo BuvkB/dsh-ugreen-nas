@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.5
+
+- 修复：`ugreen_file_write` 无法新建文件。后端 `WriteFile` 没有 CREATE 模式（目标不存在时返回业务码 1302），新建现在改走独立的 `CreateFile` RPC，并用 `exclusive=true` 防止 CreateFile 的“同名自动改名”行为产生 `xxx(1).txt`；append 模式的新建分支同样修复，覆盖已有文件仍走 `WriteFile`。
+- 修复：`ugreen_file_move` 的 `copy` 参数与 `CpMovePath.type` 语义相反：后端 `type=true` 是移动、`type=false` 是复制。默认“移动”不再实际执行复制，`copy:true` 也不再移走源文件。
+- 修复：`ugreen_file_read` 对非 UTF-8 二进制（如 0xAB）误判为可打印文本，返回替换字符而非 base64；现在用 UTF-8 往返校验判定是否按文本返回。
+- 修复：`ugreen_file_chtimes` 只提供 atime / mtime 之一时，缺失的一侧会被后端写成 0（1970）；现在单侧修改会先 `Stat` 读取原值再一起提交，缺少读取权限时给出明确错误。
+- 修复：`ugreen_file_tag_list` 的 `getUserTag` 固定传 `value:0` 导致永远返回空列表；新增 `uid` 参数（默认 1000）并恢复正常列表。
+- 修复：`ugreen_network_info` 的 `GetIfaceList` 传空串导致网卡列表永远为空；改传 `all` 并解包为数组。
+- 优化：`ugreen_storage_info` 的 PoolList / VolumeList 权限不足时降级返回磁盘信息，不再整单失败。
+- 修复：补齐 `ugreen_storage_info`、`ugreen_task_metrics`、`ugreen_docker_check`、`ugreen_network_info`、`ugreen_system_info`、`ugreen_file_tag_link` 的多权限声明，403 提示会列出全部相关权限；`capabilities.isReady` 改为工具级回退，避免一个代表读 RPC 被拒就把同组不同权限的工具全部隐藏。
+- 修复：`ugreen_system_info` 移除 OpenCLI 不暴露的 `GetDeviceBasicInfo` / `GetSystemInformation` 调用，只返回可用的系统版本、型号与更新状态，描述不再承诺序列号/固件详情。
+- 优化：`ugreen_storage_smart` 解析 `common.SingleString` 中的 JSON，`ugreen_docker_image_list` 解包 `result` 数组。
+- 调整：`ugreen_file_mkdir` 的 `makeAll` 与 `ugreen_file_share_mkdir` 的 `enableRecycle` 默认值改为与 CLI 一致的 false。
+- 测试：新增新建/覆盖/追加/竞态回退、move/copy 方向、二进制读取、chtimes 单侧修改、标签列表与网卡列表、权限声明与能力回退、系统信息/输出形态/默认值回归用例（unit 114 全绿），并在真实 NAS 上完成新建、覆盖、追加、移动、复制与时间戳验收。
+
 ## 0.4.4
 
 - 优化：按绿联官方公告，将插件文案中的「UGOS Pro」统一为「UGOS」。

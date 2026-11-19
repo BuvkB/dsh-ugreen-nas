@@ -559,7 +559,7 @@ v0.4.1 覆盖 8 大类全部 70 项权限对应的能力（60 个工具）：
 - 写/删/执行工具在描述中带【写/危险操作】标注；默认经 DSH `tools/pre-execute` 审批，完全权限档 approval: never 直接拒绝、不弹窗
 - 403 错误消息带缺失的权限名，提示在 NAS 端重建令牌
 - 服务端流式方法（`CreateTitleStreamTask`、`InstallStream`、`UninstallStream`、`UpdateStream`）由 WebSocket 流式客户端 `OpenCLIClient.callStream` 处理，见 3.4
-- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现；常规写文件走 `WriteFile`
+- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现；常规写文件时新建走 `CreateFile`、覆盖/追加走 `WriteFile`
 
 ### 6.5 错误处理
 
@@ -634,7 +634,43 @@ message CategoryOrFileDirListRequest {
   Operate operate = 20;
   repeated string tag_filter = 21;
 }
+
+rpc WriteFile(WriteFileRequest) returns (WriteFileResponse)
+rpc CreateFile(CreateFileRequest) returns (CreateFileResponse)
+rpc CpMovePath(CpMovePathRequest) returns (CpMovePathResponse)
+
+message WriteFileRequest {
+  string path = 1;
+  bytes content = 2;
+  WriteFileMode mode = 3;   // 只有 UNSPECIFIED/OVERWRITE/APPEND/PATCH，没有 CREATE
+  int64 offset = 4;
+  bool is_dry_run = 5;
+  bool delete_failed_file = 6;
+  int64 total_size = 7;
+  string md5 = 8;
+}
+message CreateFileRequest {
+  string path = 1;
+  uint32 mode = 2;          // 权限模式；0=服务端默认（实际受父目录 ACL/umask 影响）
+  bytes content = 3;
+  bool exclusive = 4;       // 等同 O_EXCL；false 时同名文件会被自动改名为 name(1).ext
+  bool is_dry_run = 5;
+}
+message CpMovePathRequest {
+  string src = 1;
+  string dst = 2;           // 必须是目录
+  bool type = 3;            // true=移动（MOVE），false=复制（COPY）
+  bool cover = 4;           // true=覆盖同名目标
+  int32 action_type = 5;    // 冲突策略：0=忽略，1=覆盖，3=重命名
+  bool is_dry_run = 6;
+}
 ~~~
+
+> 0.4.5 实测备注：`WriteFile` 对不存在的目标返回业务码 1302（HTTP 404），不能用来新建文件；新建应调用 `CreateFile`，并传 `exclusive=true` 防止同名自动改名。`CpMovePath.type` 是「是否移动」，与插件参数 `copy` 方向相反。
+>
+> `append` 模式实现为「ReadFile 旧内容 → 拼接 → WriteFile」，因此除 `filemgr_upload` 外还需要 `filemgr_read_and_download` 权限；仅授予上传权限的令牌只能新建/覆盖。
+>
+> `filemgr.Filemgr/getUserTag` 的 `value` 是用户 UID（实测传 0 返回空列表、传 1000 返回该用户全部标签）；`ctlserv.Network/GetIfaceList` 的 `value` 传 `all` 才返回全部网卡，空字符串返回空列表。
 
 ### 7.3 Storage
 
@@ -687,7 +723,7 @@ service download.DownloadService
 
 ### 9.1 当前版本限制
 
-- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现，常规写文件走 `WriteFile`；其余 OpenCLI 非流式能力已覆盖，3 个服务端流式方法（应用卸载/更新、全局搜索）已接入
+- `Filemgr/UploadFile` 的 multipart 分片上传仍未实现，常规写文件时新建走 `CreateFile`、覆盖/追加走 `WriteFile`；其余 OpenCLI 非流式能力已覆盖，3 个服务端流式方法（应用卸载/更新、全局搜索）已接入
 - 没有自定义 sidebar 面板；配置页经 plugins.bundle.config 提供
 - catalog 基于 UGOS 1.21.0.80330；升级 NAS 系统后可能需要重新提取
 - Readdir 是 server-streaming，不能用 unary 调用；文件列表改用 CategoryOrFileDirList
